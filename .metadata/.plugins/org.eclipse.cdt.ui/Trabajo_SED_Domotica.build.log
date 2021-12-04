@@ -1,0 +1,10 @@
+20:08:04 **** Incremental Build of configuration Debug for project Trabajo_SED_Domotica ****
+make -j4 all 
+arm-none-eabi-size   Trabajo_SED_Domotica.elf 
+   text	   data	    bss	    dec	    hex	filename
+   6304	     20	   1580	   7904	   1ee0	Trabajo_SED_Domotica.elf
+Finished building: default.size.stdout
+ 
+
+20:08:04 Build Finished. 0 errors, 0 warnings. (took 332ms)
+

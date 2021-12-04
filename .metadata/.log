@@ -1,0 +1,24 @@
+!SESSION 2021-12-04 19:49:46.450 -----------------------------------------------
+eclipse.buildId=Version 1.8.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=es_ES
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data C:\Users\Raul\Documents\GitHub\Trabajo-Microprocesadores-SED-2021
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2021-12-04 19:49:51.739
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2021-12-04 19:49:51.819
+!MESSAGE Log4j initialized with config file C:\Users\Raul\Documents\GitHub\Trabajo-Microprocesadores-SED-2021\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2021-12-04 19:49:58.356
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2021-12-04 19:52:30.862
+!MESSAGE Indexed 'Trabajo_SED_Domotica' (36 sources, 100 headers) in 3.77 sec: 7,773 declarations; 48,811 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0035%)
+
+!ENTRY org.eclipse.core.resources 2 10035 2021-12-04 20:14:10.886
+!MESSAGE The workspace will exit with unsaved changes in this session.
+
+!ENTRY org.eclipse.core.jobs 2 2 2021-12-04 20:14:11.226
+!MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: org.eclipse.cdt.dsf.gdb.internal.ui.console.GdbBasicCliConsole$InputReadJob
