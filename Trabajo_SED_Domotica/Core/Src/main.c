@@ -53,14 +53,26 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-volatile int button_0=0;
+volatile int button[10];
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	void rellenar_botones(int n){
+		for(int i=0;i<10;i++){
+			if(i!=n)
+				button[i]=0;
+		}
+		button[n]=1;
+	}
 
 	if (GPIO_Pin==GPIO_PIN_0)
 	{
-		button_0=1;
+		rellenar_botones(0);
+	}else
+	if (GPIO_Pin==GPIO_PIN_1)
+	{
+		rellenar_botones(1);
 	}
+
 }
 
 /*Returns true when the button has been pressed after debounce period*/
@@ -131,9 +143,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if (debouncer(&button_0, GPIOA, GPIO_PIN_0)){
+		if (debouncer(&button[0], GPIOA, GPIO_PIN_0)){
 			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
 			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+		}
+		if (debouncer(&button[1], GPIOA, GPIO_PIN_1)){
+			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
 		}
   }
   /* USER CODE END 3 */
@@ -199,8 +215,8 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PA0 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  /*Configure GPIO pins : PA0 PA1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -215,6 +231,9 @@ static void MX_GPIO_Init(void)
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
 }
 
