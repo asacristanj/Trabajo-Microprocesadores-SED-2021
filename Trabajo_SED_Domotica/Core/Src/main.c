@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdlib.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,6 +40,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN PV */
 
@@ -47,6 +49,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -102,6 +105,26 @@ int debouncer(volatile int* button_int, GPIO_TypeDef* GPIO_port, uint16_t GPIO_n
 	}
 	return 0;
 }
+void mostrartexto(  const char palabra[] ){
+	uint8_t longitud=strlen(palabra);
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, palabra, longitud, 50);
+}
+void mostrarnum( float num ){
+	uint8_t cadena_num[4];
+	if(num<10){
+		cadena_num[0]=2;
+		num=num*100;
+	}else if(num<100){
+		cadena_num[0]=1;
+		num=num*10;
+	}else{
+		cadena_num[0]=0;
+	}
+	cadena_num[1] = (num / 100);
+	cadena_num[2] = num / 10 - cadena_num[1] * 10;
+	cadena_num[3] = (num - cadena_num[1] * 100 - cadena_num[2] * 10);
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, cadena_num, 4, 50);
+}
 /* USER CODE END 0 */
 
 /**
@@ -132,25 +155,25 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+  //uint8_t datos[5]="hola ";
+    while (1)
+    {
 
-    /* USER CODE BEGIN 3 */
-		if (debouncer(&button[0], GPIOA, GPIO_PIN_0)){
-			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
-		}
-		if (debouncer(&button[1], GPIOA, GPIO_PIN_1)){
-			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
-			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
-		}
+  	  if (debouncer(&button[0], GPIOA, GPIO_PIN_0)){
+  	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+  	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+  	  			//HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, datos, sizeof(datos), 50);
+  	  			//mostrartexto("prueba");
+  	  		mostrarnum(54.8);
+  	  			//datos++;
+  	  		}
   }
   /* USER CODE END 3 */
 }
@@ -200,6 +223,40 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -211,6 +268,7 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
