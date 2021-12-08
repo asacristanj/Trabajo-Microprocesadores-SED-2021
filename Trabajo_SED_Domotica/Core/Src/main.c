@@ -107,23 +107,29 @@ int debouncer(volatile int* button_int, GPIO_TypeDef* GPIO_port, uint16_t GPIO_n
 }
 void mostrartexto(  const char palabra[] ){
 	uint8_t longitud=strlen(palabra);
-	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, palabra, longitud, 50);
+	uint8_t texto[longitud+1];
+	texto[0]=1;
+	for(int i=1;i<longitud+1;i++){
+		texto[i]=palabra[i-1];
+	}
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, texto, longitud+1, 30);
 }
 void mostrarnum( float num ){
-	uint8_t cadena_num[4];
+	uint8_t cadena_num[5];
+	cadena_num[0]=0;
 	if(num<10){
-		cadena_num[0]=2;
+		cadena_num[1]=2;
 		num=num*100;
 	}else if(num<100){
-		cadena_num[0]=1;
+		cadena_num[1]=1;
 		num=num*10;
 	}else{
-		cadena_num[0]=0;
+		cadena_num[1]=0;
 	}
-	cadena_num[1] = (num / 100);
-	cadena_num[2] = num / 10 - cadena_num[1] * 10;
-	cadena_num[3] = (num - cadena_num[1] * 100 - cadena_num[2] * 10);
-	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, cadena_num, 4, 50);
+	cadena_num[2] = (num / 100);
+	cadena_num[3] = num / 10 - cadena_num[2] * 10;
+	cadena_num[4] = (num - cadena_num[2] * 100 - cadena_num[3] * 10);
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, cadena_num, 5, 30);
 }
 /* USER CODE END 0 */
 
@@ -162,18 +168,18 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  //uint8_t datos[5]="hola ";
+  mostrartexto("   ");
+  int pulso=0;
     while (1)
     {
 
   	  if (debouncer(&button[0], GPIOA, GPIO_PIN_0)){
-  	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-  	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
-  	  			//HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, datos, sizeof(datos), 50);
-  	  			//mostrartexto("prueba");
-  	  		mostrarnum(54.8);
-  	  			//datos++;
+  	  			pulso++;
   	  		}
+  	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+	  mostrartexto("hola");
+
   }
   /* USER CODE END 3 */
 }
