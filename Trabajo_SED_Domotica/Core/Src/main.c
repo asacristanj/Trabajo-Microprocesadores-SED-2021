@@ -174,11 +174,12 @@ int main(void)
     {
 
   	  if (debouncer(&button[0], GPIOA, GPIO_PIN_0)){
+  		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+  			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+  			  mostrartexto("hola");
   	  			pulso++;
   	  		}
-  	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-	  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
-	  mostrartexto("hola");
+
 
   }
   /* USER CODE END 3 */

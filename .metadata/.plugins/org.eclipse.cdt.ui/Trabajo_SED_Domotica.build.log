@@ -1,4 +1,4 @@
-17:46:32 **** Incremental Build of configuration Debug for project Trabajo_SED_Domotica ****
+07:18:44 **** Incremental Build of configuration Debug for project Trabajo_SED_Domotica ****
 make -j4 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 arm-none-eabi-gcc -o "Trabajo_SED_Domotica.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Raul\Documents\GitHub\Trabajo-Microprocesadores-SED-2021\Trabajo_SED_Domotica\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Trabajo_SED_Domotica.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
@@ -6,15 +6,15 @@ Finished building target: Trabajo_SED_Domotica.elf
  
 arm-none-eabi-size   Trabajo_SED_Domotica.elf 
 arm-none-eabi-objdump -h -S  Trabajo_SED_Domotica.elf  > "Trabajo_SED_Domotica.list"
-   text	   data	    bss	    dec	    hex	filename
-   9296	     20	   1700	  11016	   2b08	Trabajo_SED_Domotica.elf
 arm-none-eabi-objcopy  -O binary  Trabajo_SED_Domotica.elf  "Trabajo_SED_Domotica.bin"
+   text	   data	    bss	    dec	    hex	filename
+   9212	     20	   1700	  10932	   2ab4	Trabajo_SED_Domotica.elf
 Finished building: default.size.stdout
  
 Finished building: Trabajo_SED_Domotica.bin
+ 
 Finished building: Trabajo_SED_Domotica.list
  
- 
 
-17:46:33 Build Finished. 0 errors, 0 warnings. (took 1s.411ms)
+07:18:46 Build Finished. 0 errors, 0 warnings. (took 2s.744ms)
 

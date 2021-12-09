@@ -4,7 +4,7 @@ main.c:82:5:debouncer	24	static
 main.c:108:6:mostrartexto	48	dynamic
 main.c:117:6:mostrarnum	32	static
 main.c:140:5:main	16	static
-main.c:196:6:SystemClock_Config	88	static
-main.c:241:13:MX_I2C1_Init	8	static
-main.c:275:13:MX_GPIO_Init	40	static
-main.c:316:6:Error_Handler	4	static,ignoring_inline_asm
+main.c:192:6:SystemClock_Config	88	static
+main.c:237:13:MX_I2C1_Init	8	static
+main.c:271:13:MX_GPIO_Init	40	static
+main.c:312:6:Error_Handler	4	static,ignoring_inline_asm
