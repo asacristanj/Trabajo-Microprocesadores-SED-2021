@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2021 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -58,78 +58,99 @@ static void MX_I2C1_Init(void);
 /* USER CODE BEGIN 0 */
 volatile int button[10];
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	void rellenar_botones(int n){
-		for(int i=0;i<10;i++){
-			if(i!=n)
-				button[i]=0;
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	void rellenar_botones(int n) {
+		for (int i = 0; i < 10; i++) {
+			if (i != n)
+				button[i] = 0;
 		}
-		button[n]=1;
+		button[n] = 1;
 	}
 
-	if (GPIO_Pin==GPIO_PIN_0)
-	{
+	if (GPIO_Pin == GPIO_PIN_0) {
 		rellenar_botones(0);
-	}else
-	if (GPIO_Pin==GPIO_PIN_1)
-	{
+	} else if (GPIO_Pin == GPIO_PIN_1) {
 		rellenar_botones(1);
 	}
 
 }
 
 /*Returns true when the button has been pressed after debounce period*/
-int debouncer(volatile int* button_int, GPIO_TypeDef* GPIO_port, uint16_t GPIO_number){
-	static uint8_t button_count=0;
-	static int counter=0;
+int debouncer(volatile int *button_int, GPIO_TypeDef *GPIO_port,
+		uint16_t GPIO_number) {
+	static uint8_t button_count = 0;
+	static int counter = 0;
 
-	if (*button_int==1){
-		if (button_count==0) {
-			counter=HAL_GetTick();
+	if (*button_int == 1) {
+		if (button_count == 0) {
+			counter = HAL_GetTick();
 			button_count++;
 		}
-		if (HAL_GetTick()-counter>=20){
-			counter=HAL_GetTick();
-			if (HAL_GPIO_ReadPin(GPIO_port, GPIO_number)!=1){
-				button_count=1;
-			}
-			else{
+		if (HAL_GetTick() - counter >= 20) {
+			counter = HAL_GetTick();
+			if (HAL_GPIO_ReadPin(GPIO_port, GPIO_number) != 1) {
+				button_count = 1;
+			} else {
 				button_count++;
 			}
-			if (button_count==4){ //Periodo antirebotes
-				button_count=0;
-				*button_int=0;
+			if (button_count == 4) { //Periodo antirebotes
+				button_count = 0;
+				*button_int = 0;
 				return 1;
 			}
 		}
 	}
 	return 0;
 }
-void mostrartexto(  const char palabra[] ){
-	uint8_t longitud=strlen(palabra);
-	uint8_t texto[longitud+1];
-	texto[0]=1;
-	for(int i=1;i<longitud+1;i++){
-		texto[i]=palabra[i-1];
+void mostrartexto7s(const char palabra[]) {
+	uint8_t longitud = strlen(palabra);
+	uint8_t texto[longitud + 1];
+	texto[0] = 1;
+	for (int i = 1; i < longitud + 1; i++) {
+		texto[i] = palabra[i - 1];
 	}
-	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, texto, longitud+1, 30);
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, texto, longitud + 1, 30);
 }
-void mostrarnum( float num ){
+void mostrarnum7s(float num) {
 	uint8_t cadena_num[5];
-	cadena_num[0]=0;
-	if(num<10){
-		cadena_num[1]=2;
-		num=num*100;
-	}else if(num<100){
-		cadena_num[1]=1;
-		num=num*10;
-	}else{
-		cadena_num[1]=0;
+	cadena_num[0] = 0;
+	if (num < 10) {
+		cadena_num[1] = 2;
+		num = num * 100;
+	} else if (num < 100) {
+		cadena_num[1] = 1;
+		num = num * 10;
+	} else{
+		cadena_num[1] = 0;
 	}
 	cadena_num[2] = (num / 100);
 	cadena_num[3] = num / 10 - cadena_num[2] * 10;
 	cadena_num[4] = (num - cadena_num[2] * 100 - cadena_num[3] * 10);
-	HAL_I2C_Master_Transmit(&hi2c1, 0x8<<1, cadena_num, 5, 30);
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, cadena_num, 5, 30);
+}
+void mostrar_tft(const char* orden){
+	uint8_t x[25];
+		for(int i=0;i<25;i++){
+
+		}
+
+	if(strcmp("pantalla_principal",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &x, 1,30);
+	}else if(strcmp("resaltar_boton_luces",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &x, 1, 30);
+	}else if(strcmp("resaltar_boton_persianas",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, x+2, 1, 30);
+	}else if(strcmp("resaltar_boton_riego",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, x+1, 1, 30);
+	}else if(strcmp("resaltar_boton_clima",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 5, 1, 30);
+	}else if(strcmp("resaltar_boton_audio",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 6, 1, 30);
+	}else if(strcmp("resaltar_boton_seguridad",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 7, 1, 30);
+	}else if(strcmp("entrar_luces",orden)){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 8, 1, 30);
+	}
 }
 /* USER CODE END 0 */
 
@@ -163,24 +184,23 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
+	mostrartexto7s("   ");
+	mostrar_tft("pantalla_principal");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  mostrartexto("   ");
-  int pulso=0;
-    while (1)
-    {
+  while (1)
+  {
+    /* USER CODE END WHILE */
 
-  	  if (debouncer(&button[0], GPIOA, GPIO_PIN_0)){
-  		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-  			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
-  			  mostrartexto("hola");
-  	  			pulso++;
-  	  		}
-
-
+    /* USER CODE BEGIN 3 */
+	  if (debouncer(&button[0], GPIOA, GPIO_PIN_0)) {
+	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+	  			mostrar_tft("resaltar_boton_luces");
+	  			mostrartexto7s("hola");
+	  		}
   }
   /* USER CODE END 3 */
 }
@@ -312,11 +332,10 @@ static void MX_GPIO_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1) {
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
