@@ -1,0 +1,10 @@
+/*
+ * control_LCD.c
+ *
+ *  Created on: Dec 12, 2021
+ *      Author: Raul
+ */
+#include "main.h"
+#include "stdlib.h"
+#include "string.h"
+

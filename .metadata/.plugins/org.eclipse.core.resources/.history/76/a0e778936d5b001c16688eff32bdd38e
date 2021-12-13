@@ -1,0 +1,3 @@
+void mostrar_tft(int orden){
+		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &orden, 1,30);
+}

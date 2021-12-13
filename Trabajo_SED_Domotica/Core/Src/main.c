@@ -56,8 +56,9 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-volatile int button[10];
 
+//Interrupciones botones:
+volatile int button[10];
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	void rellenar_botones(int n) {
 		for (int i = 0; i < 10; i++) {
@@ -74,8 +75,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	}
 
 }
-
-/*Returns true when the button has been pressed after debounce period*/
+//Antirrebotes botones:
 int debouncer(volatile int *button_int, GPIO_TypeDef *GPIO_port,
 		uint16_t GPIO_number) {
 	static uint8_t button_count = 0;
@@ -102,6 +102,9 @@ int debouncer(volatile int *button_int, GPIO_TypeDef *GPIO_port,
 	}
 	return 0;
 }
+
+//--------------------------------7 SEGMENTOS------------------------//
+//Mostrar texto en pantalla 7 segmentos
 void mostrartexto7s(const char palabra[]) {
 	uint8_t longitud = strlen(palabra);
 	uint8_t texto[longitud + 1];
@@ -109,8 +112,9 @@ void mostrartexto7s(const char palabra[]) {
 	for (int i = 1; i < longitud + 1; i++) {
 		texto[i] = palabra[i - 1];
 	}
-	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, texto, longitud + 1, 30);
+	HAL_I2C_Master_Transmit(&hi2c1, 0x7 << 1, texto, longitud + 1, 30);
 }
+//Mostrar numero en pantalla 7 segmentos
 void mostrarnum7s(float num) {
 	uint8_t cadena_num[5];
 	cadena_num[0] = 0;
@@ -120,205 +124,466 @@ void mostrarnum7s(float num) {
 	} else if (num < 100) {
 		cadena_num[1] = 1;
 		num = num * 10;
-	} else{
+	} else {
 		cadena_num[1] = 0;
 	}
 	cadena_num[2] = (num / 100);
 	cadena_num[3] = num / 10 - cadena_num[2] * 10;
 	cadena_num[4] = (num - cadena_num[2] * 100 - cadena_num[3] * 10);
-	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, cadena_num, 5, 30);
+	HAL_I2C_Master_Transmit(&hi2c1, 0x7 << 1, cadena_num, 5, 30);
 }
-void mostrar_tft(const char* orden){
-	uint8_t x[25];
-		for(int i=0;i<25;i++){
 
-		}
-
-	if(strcmp("pantalla_principal",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &x, 1,30);
-	}else if(strcmp("resaltar_boton_luces",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &x, 1, 30);
-	}else if(strcmp("resaltar_boton_persianas",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, x+2, 1, 30);
-	}else if(strcmp("resaltar_boton_riego",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, x+1, 1, 30);
-	}else if(strcmp("resaltar_boton_clima",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 5, 1, 30);
-	}else if(strcmp("resaltar_boton_audio",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 6, 1, 30);
-	}else if(strcmp("resaltar_boton_seguridad",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 7, 1, 30);
-	}else if(strcmp("entrar_luces",orden)){
-		HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 8, 1, 30);
+//------------------CONTROL LCD ESCLAVO-----------------------//
+//Limpiar pantalla LCD
+void clrScr() {
+	uint8_t op = 1;
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &op, 1, 3000);
+}
+//Seleccionar Color pantalla LCD
+void setColor(int red, int green, int blue) {
+	uint8_t color[4] = { 2, red, green, blue };
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &color, 4, 3000);
+}
+//Seleccionar color fondo pantalla LCD
+void setBackColor(int red, int green, int blue) {
+	uint8_t color[4] = { 3, red, green, blue };
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &color, 4, 3000);
+}
+//Dibuja un rectángulo pantalla LCD
+void drawRect(int x1, int y1, int x2, int y2) {
+	int desb[4] = { 0, 0, 0, 0 };
+	if (x1 > 255) {
+		desb[0] = 1;
+	}
+	if (y1 > 255) {
+		desb[1] = 1;
+	}
+	if (x2 > 255) {
+		desb[2] = 1;
+	}
+	if (y2 > 255) {
+		desb[3] = 1;
+	}
+	uint8_t coord[9] = { 4, x1, y1, x2, y2, desb[0], desb[1], desb[2], desb[3] };
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 9, 3000);
+}
+//Dibuja y rellena un rectángulo pantalla  LCD
+void fillRect(int x1, int y1, int x2, int y2) {
+	int desb[4] = { 0, 0, 0, 0 };
+	if (x1 > 255) {
+		desb[0] = 1;
+	}
+	if (y1 > 255) {
+		desb[1] = 1;
+	}
+	if (x2 > 255) {
+		desb[2] = 1;
+	}
+	if (y2 > 255) {
+		desb[3] = 1;
+	}
+	uint8_t coord[9] = { 5, x1, y1, x2, y2, desb[0], desb[1], desb[2], desb[3] };
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 9, 3000);
+}
+//Imprime una palabra de hasta 28 caracteres
+void print(const char *t, int x, int y) {
+	int desb[2] = { 0, 0 };
+	if (x > 255) {
+		desb[0] = 1;
+	}
+	if (y > 255) {
+		desb[1] = 1;
+	}
+	uint8_t cadena[50];
+	cadena[0] = 6;
+	int longitud = strlen(t);
+	cadena[1] = longitud;
+	cadena[2] = desb[0];
+	cadena[3] = desb[1];
+	for (int i = 4; i < longitud + 4; i++) {
+		cadena[i] = t[i - 4];
+	}
+	cadena[longitud + 4] = x;
+	cadena[longitud + 5] = y;
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &cadena, longitud + 6, 3000);
+}
+//Imprime una serie de palabras de hasta 28 caracteres cada una en pantalla  LCD
+void printfrase(const char *t[], int x, int y, int numpalabras) {
+	int long_acumulada = 0;
+	for (int i = 0; i < numpalabras; i++) {
+		print(t[i], x + long_acumulada, y);
+		long_acumulada = long_acumulada + strlen(t[i]) * 8;
 	}
 }
+//Elije fuente: 0 para pequeño, 1 para grande y 3 para numeros en pantalla  LCD
+void setFont(int f) {
+	uint8_t font[2] = { 7, f };
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &font, 2, 3000);
+}
+
+//estructura para elegir colores mas facilmente
+typedef struct rgb {
+	int r, g, b;
+} rgb;
+
+int dist_lateral_pared = 30;
+int dist_altura_boton = 70;
+int ancho_boton = 100;
+int alto_boton = 70;
+int marco_boton = 2;
+int nuevo_marco = 5;
+rgb cboton = { 0, 0, 255 };
+rgb cmarco = { 255, 255, 255 };
+rgb cmarcon = { 255, 0, 0 };
+rgb ctexto = { 255, 255, 255 };
+int filas = 2;
+int columnas = 3;
+int boton_resaltado = 0;
+int espacio_entre_botones;
+int alto_entre_botones;
+
+void botones(int distl, int distalt, int ancho, int alto, int marco, int nmarco,
+		rgb color_boton, rgb color_marco, rgb color_marco_nuevo,
+		rgb color_texto, int f, int c) {
+	dist_lateral_pared = distl;
+	dist_altura_boton = distalt;
+	ancho_boton = ancho;
+	alto_boton = alto;
+	marco_boton = marco;
+	nuevo_marco = nmarco;
+	cboton = color_boton;
+	cmarco = color_marco;
+	cmarcon = color_marco_nuevo;
+	ctexto = color_texto;
+	filas = f;
+	columnas = c;
+	if (columnas != 1) {
+		espacio_entre_botones = (480 - ancho_boton * columnas
+				- dist_lateral_pared * 2) / (columnas - 1);
+	} else {
+		espacio_entre_botones = (480 - ancho_boton * columnas
+				- dist_lateral_pared * 2) / columnas;
+	}
+	if (filas != 1) {
+		alto_entre_botones = (320 - alto_boton * filas - dist_altura_boton * 2)
+				/ (filas - 1);
+	} else {
+		alto_entre_botones = (320 - alto_boton * filas - dist_altura_boton * 2)
+				/ filas;
+	}
+}
+
+void crear_botonera() {
+	for (int j = 0; j < filas; j++) {
+		for (int i = 0; i < columnas; i++) {
+			int x = dist_lateral_pared
+					+ ((espacio_entre_botones + ancho_boton) * i);
+			int y = dist_altura_boton + ((alto_entre_botones + alto_boton) * j);
+			setColor(cmarco.r, cmarco.g, cmarco.b);
+			fillRect(x - marco_boton, y - marco_boton,
+					x + ancho_boton + marco_boton,
+					y + alto_boton + marco_boton);
+			setColor(cboton.r, cboton.g, cboton.b);
+			fillRect(x, y, x + ancho_boton, y + alto_boton);
+		}
+	}
+}
+
+void resaltar_boton(int b) {
+	int k = 1;
+	for (int j = 0; j < filas; j++) {
+		for (int i = 0; i < columnas; i++) {
+			if (boton_resaltado == k) {
+				int x = dist_lateral_pared
+						+ (espacio_entre_botones + ancho_boton) * i;
+				int y = dist_altura_boton
+						+ (alto_entre_botones + alto_boton) * j;
+				setColor(0, 0, 0);
+				fillRect(x - nuevo_marco, y - nuevo_marco,
+						x + ancho_boton + nuevo_marco,
+						y + alto_boton + nuevo_marco);
+				setColor(cmarco.r, cmarco.g, cmarco.b);
+				fillRect(x - marco_boton, y - marco_boton,
+						x + ancho_boton + marco_boton,
+						y + alto_boton + marco_boton);
+				setColor(cboton.r, cboton.g, cboton.b);
+				fillRect(x, y, x + ancho_boton, y + alto_boton);
+			}
+			k++;
+		}
+	}
+	k = 1;
+	boton_resaltado = b;
+	for (int j = 0; j < filas; j++) {
+		for (int i = 0; i < columnas; i++) {
+			if (boton_resaltado == k) {
+				int x = dist_lateral_pared
+						+ (espacio_entre_botones + ancho_boton) * i;
+				int y = dist_altura_boton
+						+ (alto_entre_botones + alto_boton) * j;
+				setColor(cmarcon.r, cmarcon.g, cmarcon.b);
+				fillRect(x - nuevo_marco, y - nuevo_marco,
+						x + ancho_boton + nuevo_marco,
+						y + alto_boton + nuevo_marco);
+				setColor(cboton.r, cboton.g, cboton.b);
+				fillRect(x, y, x + ancho_boton, y + alto_boton);
+			}
+			k++;
+		}
+	}
+}
+
+void rellenar_botones(const char *t[]) {
+	int k = 1;
+	int alto_letra = 16;
+	int ancho_letra = 16;
+	setColor(ctexto.r, ctexto.g, ctexto.b);
+	setBackColor(cboton.r, cboton.g, cboton.b);
+	for (int j = 0; j < filas; j++) {
+		for (int i = 0; i < columnas; i++) {
+			int x = dist_lateral_pared
+					+ (espacio_entre_botones + ancho_boton) * i;
+			int y = dist_altura_boton + (alto_entre_botones + alto_boton) * j;
+
+			if (ancho_boton >= (ancho_letra * strlen(t[k - 1]))) {
+				print(t[k - 1],
+						x + (ancho_boton - strlen(t[k - 1]) * ancho_letra) / 2,
+						y + (alto_boton - alto_letra) / 2);
+			} else {
+				char t1[20], t2[20];
+				for (int i = 0; i < 20; i++) {
+					t1[i] = 0;
+					t2[i] = 0;
+				}
+				for (int g = 0; g < (ancho_boton / ancho_letra); g++) {
+					t1[g] = t[k - 1][g];
+				}
+				for (int g = (ancho_boton / ancho_letra); g <= strlen(t[k - 1]);
+						g++) {
+					t2[g - (ancho_boton / ancho_letra)] = t[k - 1][g];
+				}
+				print(t1, x + (ancho_boton - strlen(t1) * ancho_letra) / 2,
+						y + (alto_boton - alto_letra * 2) / 2);
+				print(t2, x + (ancho_boton - strlen(t2) * ancho_letra) / 2,
+						y + (alto_boton - alto_letra * 2) / 2 + alto_letra);
+			}
+
+			k++;
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------//
+
+//botones b_luces(30, 70, 150, 140, 2, 5, {0, 0, 255}, {255, 255, 255}, {255, 0, 0}, {255, 255, 255}, 1, 2 );
+const char *t_menu[6] = { "LUCES", "PERSIANAS", "RIEGO", "CLIMA", "AUDIO",
+		"SEGURIDAD" };
+//const char* t_luces[2] = {"AUTOMATICO", "MANUAL"};
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
-  /* USER CODE BEGIN 1 */
+ * @brief  The application entry point.
+ * @retval int
+ */
+int main(void) {
+	/* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_I2C1_Init();
-  /* USER CODE BEGIN 2 */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_I2C1_Init();
+	/* USER CODE BEGIN 2 */
+	int opcion = 0;
+	rgb boton = { 0, 0, 255 };
+	rgb marco = { 255, 255, 255 };
+	rgb nmarco = { 255, 0, 0 };
+	rgb texto = { 255, 255, 255 };
+	clrScr();
+	setColor(255, 0, 0);
+	fillRect(1, 1, 478, 40);
+	setColor(64, 64, 64);
+	fillRect(1, 318, 478, 280);
+	setColor(255, 255, 255);
+	setBackColor(255, 0, 0);
+	setFont(1);
+	print("* CASA DOMOTICA *", 50, 12);
+	setBackColor(64, 64, 64);
+	setColor(255, 255, 0);
+	setFont(0);
+	const char *t[3] = { "Sistemas", " Electronicos", " Digitales" };
+	printfrase(t, 20, 281, 3);
+	const char *t2[3] = { "Raul Herranz,", " Alejandro Sacristan",
+			", Carlos Murillo" };
+	printfrase(t2, 20, 300, 3);
+	setColor(0, 0, 255);
+	drawRect(0, 0, 479, 319);
+	botones(30, 70, 100, 70, 2, 5, boton, marco, nmarco, texto, 2, 3);
+	crear_botonera();
+	setFont(1);
+	rellenar_botones(t_menu);
 	mostrartexto7s("   ");
-	mostrar_tft("pantalla_principal");
-  /* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1) {
+		/* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-	  if (debouncer(&button[0], GPIOA, GPIO_PIN_0)) {
-	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-	  			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
-	  			mostrar_tft("resaltar_boton_luces");
-	  			mostrartexto7s("hola");
-	  		}
-  }
-  /* USER CODE END 3 */
+		/* USER CODE BEGIN 3 */
+		if (debouncer(&button[0], GPIOA, GPIO_PIN_0)) {
+			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+			opcion++;
+			resaltar_boton(opcion);
+			setFont(1);
+			rellenar_botones(t_menu);
+			if (opcion == 1) {
+				mostrartexto7s("luces");
+			}else if(opcion == 2) {
+				mostrartexto7s("persianas");
+			}else if(opcion == 3) {
+				mostrartexto7s("riego");
+			}else if(opcion == 4) {
+				mostrartexto7s("clima");
+			}else if(opcion == 5) {
+				mostrartexto7s("audio");
+			}else if (opcion == 6) {
+				mostrartexto7s("seguridad");
+				opcion = 0;
+			}
+
+		}
+
+	}
+	/* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void)
-{
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ * @brief System Clock Configuration
+ * @retval None
+ */
+void SystemClock_Config(void) {
+	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
 
-  /** Configure the main internal regulator output voltage
-  */
-  __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 50;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
+	/** Configure the main internal regulator output voltage
+	 */
+	__HAL_RCC_PWR_CLK_ENABLE();
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+	/** Initializes the RCC Oscillators according to the specified parameters
+	 * in the RCC_OscInitTypeDef structure.
+	 */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	RCC_OscInitStruct.PLL.PLLM = 8;
+	RCC_OscInitStruct.PLL.PLLN = 50;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+	RCC_OscInitStruct.PLL.PLLQ = 7;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+		Error_Handler();
+	}
+	/** Initializes the CPU, AHB and APB buses clocks
+	 */
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
-    Error_Handler();
-  }
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
+		Error_Handler();
+	}
 }
 
 /**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C1_Init(void)
-{
+ * @brief I2C1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_I2C1_Init(void) {
 
-  /* USER CODE BEGIN I2C1_Init 0 */
+	/* USER CODE BEGIN I2C1_Init 0 */
 
-  /* USER CODE END I2C1_Init 0 */
+	/* USER CODE END I2C1_Init 0 */
 
-  /* USER CODE BEGIN I2C1_Init 1 */
+	/* USER CODE BEGIN I2C1_Init 1 */
 
-  /* USER CODE END I2C1_Init 1 */
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C1_Init 2 */
+	/* USER CODE END I2C1_Init 1 */
+	hi2c1.Instance = I2C1;
+	hi2c1.Init.ClockSpeed = 100000;
+	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+	hi2c1.Init.OwnAddress1 = 0;
+	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+	hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+	hi2c1.Init.OwnAddress2 = 0;
+	hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+	hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+	if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN I2C1_Init 2 */
 
-  /* USER CODE END I2C1_Init 2 */
+	/* USER CODE END I2C1_Init 2 */
 
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_GPIO_Init(void) {
+	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOD,
+	GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PA0 PA1 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	/*Configure GPIO pins : PA0 PA1 */
+	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PD12 PD13 PD14 PD15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+	/*Configure GPIO pins : PD12 PD13 PD14 PD15 */
+	GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	/* EXTI interrupt init*/
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+	HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
 }
 
@@ -326,17 +591,16 @@ static void MX_GPIO_Init(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-void Error_Handler(void)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void Error_Handler(void) {
+	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	__disable_irq();
 	while (1) {
 	}
-  /* USER CODE END Error_Handler_Debug */
+	/* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT

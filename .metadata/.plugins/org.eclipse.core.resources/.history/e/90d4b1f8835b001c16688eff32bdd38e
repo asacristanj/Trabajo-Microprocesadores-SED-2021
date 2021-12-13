@@ -1,0 +1,41 @@
+/*
+ * control_LCD.c
+ *
+ *  Created on: Dec 12, 2021
+ *      Author: Raul
+ */
+
+void clrScr(){
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 1, 1,30);
+}
+void setColor(int red, int green, int blue){
+	int color[4]={2,red, green, blue};
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, color, 4,30);
+}
+void setBackColor(int red, int green, int blue){
+	int color[4]={3,red, green, blue};
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, color, 4,30);
+}
+void drawRect(int x1, int y1, int x2, int y2){
+	int coord[5]={4,x1, y1, x2,y2};
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 5,30);
+}
+void fillRect(int x1, int y1, int x2, int y2){
+	uint8_t coord[5]={5,x1, y1, x2,y2};
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 5,30);
+}
+void print(const char * t, int x, int y){
+	uint8_t cadena[50];
+	cadena[0]=6;
+	int longitud=strlen(t);
+	cadena[1]=longitud;
+	for(int i=2;i<=longitud+1;i++){
+		cadena[i]=t[i-2];
+	}
+	cadena[longitud+2]=x;
+	cadena[longitud+3]=y;
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &cadena, longitud+4,30);
+}
+void setFont(int x){
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, 7, 1,30);
+}

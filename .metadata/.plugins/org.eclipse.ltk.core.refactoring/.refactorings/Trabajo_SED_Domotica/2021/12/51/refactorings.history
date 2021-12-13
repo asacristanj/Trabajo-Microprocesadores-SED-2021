@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Trabajo_SED_Domotica/Core/Src/funciones_tft&apos; to &apos;funciones_tft.c&apos;" description="Rename resource &apos;funciones_tft&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Core/Src/funciones_tft" name="funciones_tft.c" stamp="1639328596443" updateReferences="true"/>
+</session>

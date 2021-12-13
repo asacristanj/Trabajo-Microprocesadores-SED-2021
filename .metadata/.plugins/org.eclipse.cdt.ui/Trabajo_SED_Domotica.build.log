@@ -1,20 +1,98 @@
-07:18:44 **** Incremental Build of configuration Debug for project Trabajo_SED_Domotica ****
+04:42:24 **** Incremental Build of configuration Debug for project Trabajo_SED_Domotica ****
 make -j4 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'setColor':
+../Core/Src/main.c:145:44: warning: passing argument 3 of 'HAL_I2C_Master_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  145 |  HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &color, 4, 3000);
+      |                                            ^~~~~~
+      |                                            |
+      |                                            uint8_t (*)[4] {aka unsigned char (*)[4]}
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:359,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:567:98: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[4]' {aka 'unsigned char (*)[4]'}
+  567 | HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                                         ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'setBackColor':
+../Core/Src/main.c:150:44: warning: passing argument 3 of 'HAL_I2C_Master_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  150 |  HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &color, 4, 3000);
+      |                                            ^~~~~~
+      |                                            |
+      |                                            uint8_t (*)[4] {aka unsigned char (*)[4]}
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:359,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:567:98: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[4]' {aka 'unsigned char (*)[4]'}
+  567 | HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                                         ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'drawRect':
+../Core/Src/main.c:168:44: warning: passing argument 3 of 'HAL_I2C_Master_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  168 |  HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 9, 3000);
+      |                                            ^~~~~~
+      |                                            |
+      |                                            uint8_t (*)[9] {aka unsigned char (*)[9]}
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:359,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:567:98: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[9]' {aka 'unsigned char (*)[9]'}
+  567 | HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                                         ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'fillRect':
+../Core/Src/main.c:186:44: warning: passing argument 3 of 'HAL_I2C_Master_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  186 |  HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 9, 3000);
+      |                                            ^~~~~~
+      |                                            |
+      |                                            uint8_t (*)[9] {aka unsigned char (*)[9]}
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:359,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:567:98: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[9]' {aka 'unsigned char (*)[9]'}
+  567 | HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                                         ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'print':
+../Core/Src/main.c:208:44: warning: passing argument 3 of 'HAL_I2C_Master_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  208 |  HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &cadena, longitud + 6, 3000);
+      |                                            ^~~~~~~
+      |                                            |
+      |                                            uint8_t (*)[50] {aka unsigned char (*)[50]}
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:359,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:567:98: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[50]' {aka 'unsigned char (*)[50]'}
+  567 | HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                                         ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'setFont':
+../Core/Src/main.c:221:44: warning: passing argument 3 of 'HAL_I2C_Master_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  221 |  HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &font, 2, 3000);
+      |                                            ^~~~~
+      |                                            |
+      |                                            uint8_t (*)[2] {aka unsigned char (*)[2]}
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:359,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:567:98: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[2]' {aka 'unsigned char (*)[2]'}
+  567 | HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                                         ~~~~~~~~~^~~~~
 arm-none-eabi-gcc -o "Trabajo_SED_Domotica.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Raul\Documents\GitHub\Trabajo-Microprocesadores-SED-2021\Trabajo_SED_Domotica\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Trabajo_SED_Domotica.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: Trabajo_SED_Domotica.elf
  
 arm-none-eabi-size   Trabajo_SED_Domotica.elf 
 arm-none-eabi-objdump -h -S  Trabajo_SED_Domotica.elf  > "Trabajo_SED_Domotica.list"
-arm-none-eabi-objcopy  -O binary  Trabajo_SED_Domotica.elf  "Trabajo_SED_Domotica.bin"
    text	   data	    bss	    dec	    hex	filename
-   9212	     20	   1700	  10932	   2ab4	Trabajo_SED_Domotica.elf
+  12668	    124	   1716	  14508	   38ac	Trabajo_SED_Domotica.elf
+arm-none-eabi-objcopy  -O binary  Trabajo_SED_Domotica.elf  "Trabajo_SED_Domotica.bin"
 Finished building: default.size.stdout
  
 Finished building: Trabajo_SED_Domotica.bin
- 
 Finished building: Trabajo_SED_Domotica.list
  
+ 
 
-07:18:46 Build Finished. 0 errors, 0 warnings. (took 2s.744ms)
+04:42:25 Build Finished. 0 errors, 6 warnings. (took 1s.516ms)
 
