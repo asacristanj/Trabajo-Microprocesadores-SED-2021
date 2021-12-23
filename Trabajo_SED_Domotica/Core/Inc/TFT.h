@@ -287,4 +287,35 @@ void pantalla_principal(){
 		rellenar_botones(t_menu);
 }
 
+void pantalla_luces(){
+	const char *t_menu_luces[6] = { "AUTOMATICO", "MANUAL"};
+	rgb boton = { 0, 0, 255 };
+		rgb marco = { 255, 255, 255 };
+		rgb nmarco = { 255, 0, 0 };
+		rgb texto = { 255, 255, 255 };
+		clrScr();
+		setColor(255, 0, 0);
+		fillRect(1, 1, 478, 40);
+		setColor(64, 64, 64);
+		fillRect(1, 318, 478, 280);
+		setColor(255, 255, 255);
+		setBackColor(255, 0, 0);
+		setFont(1);
+		print("* MENU LUCES *", 100, 12);
+		setBackColor(64, 64, 64);
+		setColor(255, 255, 0);
+		setFont(0);
+		const char *t[3] = { "Sistemas", " Electronicos", " Digitales" };
+		printfrase(t, 20, 281, 3);
+		const char *t2[3] = { "Raul Herranz,", " Alejandro Sacristan,",
+				" Carlos Murillo" };
+		printfrase(t2, 20, 300, 3);
+		setColor(0, 0, 255);
+		drawRect(0, 0, 479, 319);
+		botones(40, 85, 180, 150, 2, 5, boton, marco, nmarco, texto, 1, 2);
+		crear_botonera();
+		setFont(1);
+		rellenar_botones(t_menu_luces);
+}
+
 #endif /* INC_TFT_H_ */

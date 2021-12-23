@@ -14,14 +14,19 @@
 
 UART_HandleTypeDef huart6;
 char rx_buffer[50], tx_buffer[50];
-
+void reset_buffer(){
+	for(int i=0;i<50;i++){
+		rx_buffer[0]='\0';
+	}
+}
 
 const char *t_menu[6] = { "LUCES", "PERSIANAS", "RIEGO", "CLIMA", "AUDIO",
 		"SEGURIDAD" };
+const char *t_menu_luces[6] = { "AUTOMATICO", "MANUAL"};
 int opcion = 0;
-void seleccion_menu_principal(){
+int seleccion_menu_principal(){
 	HAL_UART_Receive(&huart6, (uint8_t*)rx_buffer, 50, 500);
-	if (rx_buffer[0]=='r') {
+	if (rx_buffer[0]=='r'&&rx_buffer[1]=='i'&&rx_buffer[2]=='g'&&rx_buffer[3]=='h'&&rx_buffer[4]=='t') {
 		if (opcion == 3) {
 			opcion = 1;
 		}else if (opcion == 6) {
@@ -32,8 +37,8 @@ void seleccion_menu_principal(){
 		resaltar_boton(opcion);
 		setFont(1);
 		rellenar_botones(t_menu);
-		rx_buffer[0]=0;
-	} else if (rx_buffer[0]=='l') {
+		reset_buffer();
+	} else if (rx_buffer[0]=='l'&&rx_buffer[1]=='e'&&rx_buffer[2]=='f'&&rx_buffer[3]=='t') {
 		if (opcion == 1) {
 			opcion = 3;
 		}else if (opcion == 4) {
@@ -46,9 +51,9 @@ void seleccion_menu_principal(){
 		resaltar_boton(opcion);
 		setFont(1);
 		rellenar_botones(t_menu);
-		rx_buffer[0]=0;
+		reset_buffer();
 	}
-	else if (rx_buffer[0]=='u') {
+	else if (rx_buffer[0]=='u'&&rx_buffer[1]=='p') {
 				if (opcion == 1) {
 					opcion = 4;
 				}else if (opcion == 2) {
@@ -63,9 +68,9 @@ void seleccion_menu_principal(){
 				resaltar_boton(opcion);
 				setFont(1);
 				rellenar_botones(t_menu);
-				rx_buffer[0]=0;
+				reset_buffer();
 			}
-	else if (rx_buffer[0]=='d') {
+	else if (rx_buffer[0]=='d'&&rx_buffer[1]=='o'&&rx_buffer[2]=='w'&&rx_buffer[3]=='n') {
 				if (opcion == 4) {
 					opcion = 1;
 				}else if (opcion == 5) {
@@ -80,9 +85,53 @@ void seleccion_menu_principal(){
 				resaltar_boton(opcion);
 				setFont(1);
 				rellenar_botones(t_menu);
-				rx_buffer[0]=0;
+				reset_buffer();
 			}
+	else if (rx_buffer[0]=='s'&&rx_buffer[1]=='t'&&rx_buffer[2]=='a'&&rx_buffer[3]=='r'&&rx_buffer[4]=='t') {
+		reset_buffer();
+		int op=opcion;
+		opcion=0;
+		return op;
+				}
+	return 0;
 }
 
-
+int opcion_luces=0;
+int seleccion_menu_luces(){
+	HAL_UART_Receive(&huart6, (uint8_t*)rx_buffer, 50, 500);
+	if (rx_buffer[0]=='r'&&rx_buffer[1]=='i'&&rx_buffer[2]=='g'&&rx_buffer[3]=='h'&&rx_buffer[4]=='t') {
+			if (opcion_luces == 2) {
+				opcion_luces = 1;
+			}else{
+				opcion_luces++;
+			}
+			resaltar_boton(opcion_luces);
+			setFont(1);
+			rellenar_botones(t_menu_luces);
+			reset_buffer();
+		} else if (rx_buffer[0]=='l'&&rx_buffer[1]=='e'&&rx_buffer[2]=='f'&&rx_buffer[3]=='t') {
+			if (opcion_luces == 1) {
+				opcion_luces = 2;
+			}else if (opcion_luces == 0) {
+				opcion_luces = 1;
+			}else{
+				opcion_luces--;
+			}
+			resaltar_boton(opcion_luces);
+			setFont(1);
+			rellenar_botones(t_menu_luces);
+			reset_buffer();
+		}else if (rx_buffer[0]=='s'&&rx_buffer[1]=='e'&&rx_buffer[2]=='l'&&rx_buffer[3]=='e'&&rx_buffer[4]=='c'&&rx_buffer[5]=='t') {
+			reset_buffer();
+			opcion_luces=0;
+			return 0;
+					}
+		else if (rx_buffer[0]=='s'&&rx_buffer[1]=='t'&&rx_buffer[2]=='a'&&rx_buffer[3]=='r'&&rx_buffer[4]=='t') {
+				reset_buffer();
+				int op=opcion_luces;
+				opcion_luces=0;
+				return op+6;
+						}
+	return 1;
+}
 #endif /* INC_CONTROL_BT_H_ */

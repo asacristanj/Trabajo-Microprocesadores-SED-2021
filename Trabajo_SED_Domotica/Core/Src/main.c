@@ -142,8 +142,8 @@ int main(void)
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 int menu_actual=0;
-	pantalla_principal();
 
+	int retorno=0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -152,12 +152,54 @@ int menu_actual=0;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//MENU PRINCIPAL
 		if(menu_actual==0){
-			seleccion_menu_principal();
+			if(retorno==0){
+				pantalla_principal();
+				retorno++;
+			}
+			menu_actual=seleccion_menu_principal();
+			if(menu_actual!=0){
+				retorno--;
+			}
+//MENU SELECCION MODO LUCES
 		}else if(menu_actual==1){
-
+			if(retorno==0){
+				pantalla_luces();
+				retorno++;
+			}
+			menu_actual=seleccion_menu_luces();
+		if(menu_actual!=1){
+			retorno--;
 		}
-
+//MENU SELECCION MODO PERSIANAS
+		}else if(menu_actual==2){
+			clrScr();
+		}
+//MENU SELECCION MODO RIEGO
+		else if(menu_actual==3){
+			clrScr();
+		}
+//MENU SELECCION MODO CLIMA
+		else if(menu_actual==4){
+			clrScr();
+		}
+//MENU SELECCION AUDIO
+		else if(menu_actual==5){
+			clrScr();
+		}
+//MENU SEGURIDAD
+		else if(menu_actual==6){
+			clrScr();
+		}
+//MENU LUCES AUTOMATICO (7)
+		else if(menu_actual==7){
+		clrScr();
+		}
+//MENU LUCES MANUAL (8)
+		else if(menu_actual==7){
+			clrScr();
+		}
 	}
   /* USER CODE END 3 */
 }
