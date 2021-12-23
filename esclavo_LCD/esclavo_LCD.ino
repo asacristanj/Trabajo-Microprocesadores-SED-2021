@@ -172,37 +172,7 @@ void setup()
 
 void loop()
 {
-  /*
-    char option = ' ';
-    if (Serial.available() != 0) {
-    option = Serial.read();
-    if ((option >= 'a') && (option <= 'f')) {
-      b_menu.resaltar_boton(option - 'a' + 1);
-      myGLCD.setFont(BigFont);
-      b_menu.rellenar_botones(t_menu);
-    }
-    if (option == 'g') {
-      myGLCD.setColor(0, 0, 0);
-      myGLCD.fillRect(1, 50, 478, 270);
-      b_luces.crear_botonera();
-      b_luces.resaltar_boton(0);
-      myGLCD.setFont(BigFont);
-      b_luces.rellenar_botones(t_luces);
-    }
-    if ((option >= 'h') && (option <= 'l')) {
-      myGLCD.setColor(0, 0, 0);
-      myGLCD.fillRect(1, 50, 478, 270);
-    }
-    if (option == 'm') {
-      myGLCD.setColor(0, 0, 0);
-      myGLCD.fillRect(1, 50, 478, 270);
-      b_menu.crear_botonera();
-      b_menu.resaltar_boton(0);
-      myGLCD.setFont(BigFont);
-      b_menu.rellenar_botones(t_menu);
-    }
-    }
-  */
+  
 }
 
 void receiveEvent(int howMany) {
@@ -213,19 +183,15 @@ void receiveEvent(int howMany) {
   while (Wire.available()) {
     cadena[k] = Wire.read();
     Serial.print(cadena[k]);
-    Serial.print(' ');
     k++;
   }
   option = cadena[0];
   if (option == 1) {
     myGLCD.clrScr();
-    Serial.println(' ');
   } else if (option == 2) {
     myGLCD.setColor(cadena[1], cadena[2], cadena[3]);
-    Serial.println(' ');
   } else if (option == 3) {
     myGLCD.setBackColor(cadena[1], cadena[2], cadena[3]);
-    Serial.println(' ');
   } else if (option == 4) {
     for (int i = 5; i < 9; i++) {
       if (cadena[i] == 1) {
@@ -233,7 +199,6 @@ void receiveEvent(int howMany) {
       }
     }
     myGLCD.drawRect(cadena[1], cadena[2], cadena[3], cadena[4]);
-    Serial.println(' ');
   } else if (option == 5) {
     for (int i = 5; i < 9; i++) {
       if (cadena[i] == 1) {
@@ -241,7 +206,6 @@ void receiveEvent(int howMany) {
       }
     }
     myGLCD.fillRect(cadena[1], cadena[2], cadena[3], cadena[4]);
-    Serial.println(' ');
   } else if (option == 6) {
     for (int i = 0; i < cadena[1]; i++) {
       t[i] = cadena[i + 4] + '0' - '0';
@@ -255,8 +219,6 @@ void receiveEvent(int howMany) {
       }
     }
     myGLCD.print(t, cadena[cadena[1] + 4], cadena[cadena[1] + 5]);
-    Serial.print(t);
-    Serial.println(' ');
   } else if (option == 7) {
     if (cadena[1] == 0) {
       myGLCD.setFont(SmallFont);
