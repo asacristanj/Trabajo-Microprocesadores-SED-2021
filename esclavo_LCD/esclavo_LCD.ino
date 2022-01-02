@@ -75,7 +75,19 @@ void receiveEvent(int howMany) {
     } else if (cadena[1] == 2) {
       myGLCD.setFont(SevenSegNumFont);
     }
+  }else if (option == 8) {
+    for (int i = 4; i < 7; i++) {
+      if (cadena[i] == 1) {
+        cadena[i - 3] = cadena[i - 3] + 256;
+      }
+    }
+    myGLCD.drawCircle(cadena[1], cadena[2], cadena[3]);
+  }else if (option == 9) {
+    for (int i = 4; i < 7; i++) {
+      if (cadena[i] == 1) {
+        cadena[i - 3] = cadena[i - 3] + 256;
+      }
+    }
+    myGLCD.fillCircle(cadena[1], cadena[2], cadena[3]);
   }
-
-
 }

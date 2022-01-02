@@ -10,6 +10,7 @@
 #include"main.h"
 #include "stdlib.h"
 #include "string.h"
+#include "control_luces.h"
 
 I2C_HandleTypeDef hi2c1;
 
@@ -99,6 +100,36 @@ void printfrase(const char *t[], int x, int y, int numpalabras) {
 void setFont(int f) {
 	uint8_t font[2] = { 7, f };
 	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &font, 2, 3000);
+}
+//Imprime circulos
+void drawCircle(int x, int y, int r) {
+	int desb[3] = { 0, 0, 0 };
+	if (x > 255) {
+		desb[0] = 1;
+	}
+	if (y > 255) {
+		desb[1] = 1;
+	}
+	if (r > 255) {
+		desb[2] = 1;
+	}
+	uint8_t coord[7] = { 8, x, y, r, desb[0], desb[1], desb[2] };
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 7, 3000);
+}
+//Imprime circulos rellenos
+void fillCircle(int x, int y, int r) {
+	int desb[3] = { 0, 0, 0 };
+	if (x > 255) {
+		desb[0] = 1;
+	}
+	if (y > 255) {
+		desb[1] = 1;
+	}
+	if (r > 255) {
+		desb[2] = 1;
+	}
+	uint8_t coord[7] = { 9, x, y, r, desb[0], desb[1], desb[2] };
+	HAL_I2C_Master_Transmit(&hi2c1, 0x8 << 1, &coord, 7, 3000);
 }
 
 //estructura para elegir colores mas facilmente
@@ -255,67 +286,119 @@ void rellenar_botones(const char *t[]) {
 
 //-------------------------------------------------------------------------------//
 
-void pantalla_principal(){
+void pantalla_principal() {
 	const char *t_menu[6] = { "LUCES", "PERSIANAS", "RIEGO", "CLIMA", "AUDIO",
 			"SEGURIDAD" };
 	rgb boton = { 0, 0, 255 };
-		rgb marco = { 255, 255, 255 };
-		rgb nmarco = { 255, 0, 0 };
-		rgb texto = { 255, 255, 255 };
-		clrScr();
-		setColor(255, 0, 0);
-		fillRect(1, 1, 478, 40);
-		setColor(64, 64, 64);
-		fillRect(1, 318, 478, 280);
-		setColor(255, 255, 255);
-		setBackColor(255, 0, 0);
-		setFont(1);
-		print("* CASA DOMOTICA *", 50, 12);
-		setBackColor(64, 64, 64);
-		setColor(255, 255, 0);
-		setFont(0);
-		const char *t[3] = { "Sistemas", " Electronicos", " Digitales" };
-		printfrase(t, 20, 281, 3);
-		const char *t2[3] = { "Raul Herranz,", " Alejandro Sacristan",
-				", Carlos Murillo" };
-		printfrase(t2, 20, 300, 3);
-		setColor(0, 0, 255);
-		drawRect(0, 0, 479, 319);
-		botones(30, 70, 100, 70, 2, 5, boton, marco, nmarco, texto, 2, 3);
-		crear_botonera();
-		setFont(1);
-		rellenar_botones(t_menu);
+	rgb marco = { 255, 255, 255 };
+	rgb nmarco = { 255, 0, 0 };
+	rgb texto = { 255, 255, 255 };
+	clrScr();
+	setColor(255, 0, 0);
+	fillRect(1, 1, 478, 40);
+	setColor(64, 64, 64);
+	fillRect(1, 318, 478, 280);
+	setColor(255, 255, 255);
+	setBackColor(255, 0, 0);
+	setFont(1);
+	print("* CASA DOMOTICA *", 50, 12);
+	setBackColor(64, 64, 64);
+	setColor(255, 255, 0);
+	setFont(0);
+	const char *t[3] = { "Sistemas", " Electronicos", " Digitales" };
+	printfrase(t, 20, 281, 3);
+	const char *t2[3] = { "Raul Herranz,", " Alejandro Sacristan",
+			", Carlos Murillo" };
+	printfrase(t2, 20, 300, 3);
+	setColor(0, 0, 255);
+	drawRect(0, 0, 479, 319);
+	botones(30, 70, 100, 70, 2, 5, boton, marco, nmarco, texto, 2, 3);
+	crear_botonera();
+	setFont(1);
+	rellenar_botones(t_menu);
 }
 
-void pantalla_luces(){
-	const char *t_menu_luces[6] = { "AUTOMATICO", "MANUAL"};
+void pantalla_luces() {
+	const char *t_menu_luces[6] = { "AUTOMATICO", "MANUAL" };
 	rgb boton = { 0, 0, 255 };
-		rgb marco = { 255, 255, 255 };
-		rgb nmarco = { 255, 0, 0 };
-		rgb texto = { 255, 255, 255 };
-		clrScr();
-		setColor(255, 0, 0);
-		fillRect(1, 1, 478, 40);
-		setColor(64, 64, 64);
-		fillRect(1, 318, 478, 280);
-		setColor(255, 255, 255);
-		setBackColor(255, 0, 0);
-		setFont(1);
-		print("* MENU LUCES *", 100, 12);
-		setBackColor(64, 64, 64);
-		setColor(255, 255, 0);
-		setFont(0);
-		const char *t[3] = { "Sistemas", " Electronicos", " Digitales" };
-		printfrase(t, 20, 281, 3);
-		const char *t2[3] = { "Raul Herranz,", " Alejandro Sacristan,",
-				" Carlos Murillo" };
-		printfrase(t2, 20, 300, 3);
+	rgb marco = { 255, 255, 255 };
+	rgb nmarco = { 255, 0, 0 };
+	rgb texto = { 255, 255, 255 };
+	clrScr();
+	setColor(255, 0, 0);
+	fillRect(1, 1, 478, 40);
+	setColor(64, 64, 64);
+	fillRect(1, 318, 478, 280);
+	setColor(255, 255, 255);
+	setBackColor(255, 0, 0);
+	setFont(1);
+	print("* MENU LUCES *", 100, 12);
+	setBackColor(64, 64, 64);
+	setColor(255, 255, 0);
+	setFont(0);
+	const char *t[3] = { "Sistemas", " Electronicos", " Digitales" };
+	printfrase(t, 20, 281, 3);
+	const char *t2[3] = { "Raul Herranz,", " Alejandro Sacristan,",
+			" Carlos Murillo" };
+	printfrase(t2, 20, 300, 3);
+	setColor(0, 0, 255);
+	drawRect(0, 0, 479, 319);
+	botones(40, 85, 180, 150, 2, 5, boton, marco, nmarco, texto, 1, 2);
+	crear_botonera();
+	setFont(1);
+	rellenar_botones(t_menu_luces);
+}
+void pantalla_luces_manual() {
+	clrScr();
+	setColor(255, 0, 0);
+	fillRect(1, 1, 478, 40);
+	setColor(64, 64, 64);
+	fillRect(1, 318, 478, 280);
+	setColor(255, 255, 255);
+	setBackColor(255, 0, 0);
+	setFont(1);
+	print("* CONTROL MANUAL DE LUCES *", 30, 12);
+	setBackColor(64, 64, 64);
+	setColor(255, 255, 0);
+	setFont(0);
+	const char *t[3] = { "Sistemas", " Electronicos", " Digitales" };
+	printfrase(t, 20, 281, 3);
+	const char *t2[3] = { "Raul Herranz,", " Alejandro Sacristan,",
+			" Carlos Murillo" };
+	printfrase(t2, 20, 300, 3);
+	setColor(0, 0, 255);
+	drawRect(0, 0, 479, 319);
+
+	setColor(0, 255, 0);
+	fillCircle(118, 130, 25);
+	setColor(255, 0, 0);
+	fillCircle(358, 130, 25);
+	setColor(255, 255, 255);
+	setBackColor(0, 0, 0);
+	setFont(1);
+	print("ON", 102, 170);
+	print("OFF", 334, 170);
+
+	if (getEstadoLuces() == 0) {
+		setColor(0, 0, 0);
+		fillCircle(118, 130, 30);
 		setColor(0, 0, 255);
-		drawRect(0, 0, 479, 319);
-		botones(40, 85, 180, 150, 2, 5, boton, marco, nmarco, texto, 1, 2);
-		crear_botonera();
-		setFont(1);
-		rellenar_botones(t_menu_luces);
+		fillCircle(358, 130, 30);
+		setColor(0, 255, 0);
+		fillCircle(118, 130, 25);
+		setColor(255, 0, 0);
+		fillCircle(358, 130, 25);
+	} else {
+		setColor(0, 0, 255);
+		fillCircle(118, 130, 30);
+		setColor(0, 0, 0);
+		fillCircle(358, 130, 30);
+		setColor(0, 255, 0);
+		fillCircle(118, 130, 25);
+		setColor(255, 0, 0);
+		fillCircle(358, 130, 25);
+	}
+
 }
 
 #endif /* INC_TFT_H_ */
