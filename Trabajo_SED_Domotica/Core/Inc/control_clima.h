@@ -16,6 +16,42 @@ float Temperature = 0;
 float Humidity = 0;
 uint8_t Presence = 0;
 
+int estado_clima; //0 todo apagado, 1 calef encendida y aire apagado, 2 calef apagada y aire encendido
+
+void setEstadoClima(int n){
+	estado_clima=n;
+	if(estado_clima==0){
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+	}else if(estado_clima==1){
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+	}else if(estado_clima==2){
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+	}
+}
+
+int getEstadoClima(){
+	return estado_clima;
+}
+
+void cambiaEstadoClimaCalef(){
+	if(estado_clima==0||estado_clima==2){
+		setEstadoClima(1);
+	}else{
+		setEstadoClima(0);
+	}
+}
+
+void cambiaEstadoClimaAire(){
+	if(estado_clima==0||estado_clima==1){
+		setEstadoClima(2);
+	}else{
+		setEstadoClima(0);
+	}
+}
+
 void delay(uint16_t time) {
 	__HAL_TIM_SET_COUNTER(&htim6, 0);
 	while ((__HAL_TIM_GET_COUNTER(&htim6)) < time)
@@ -91,12 +127,14 @@ void lectura_dht11() {
 	Temp_byte1 = DHT11_Read();
 	Temp_byte2 = DHT11_Read();
 	SUM = DHT11_Read();
-
 	TEMP = Temp_byte1;
 	RH = Rh_byte1;
-
 	Temperature = (float) TEMP;
 	Humidity = (float) RH;
+}
+
+void clima(){
+	lectura_dht11();
 }
 
 #endif /* INC_CONTROL_CLIMA_H_ */
