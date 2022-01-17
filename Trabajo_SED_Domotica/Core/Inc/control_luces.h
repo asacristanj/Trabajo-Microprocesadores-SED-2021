@@ -9,8 +9,9 @@
 #define INC_CONTROL_LUCES_H_
 #include "main.h"
 
-int estado=0;
-int modo=0; //0 manual 1 auto
+ADC_HandleTypeDef hadc1;
+int estado_luces=0;
+int modo_luces=0; //0 manual 1 auto
 
 void setLuces(int n){
 	if(n==0){
@@ -19,22 +20,22 @@ void setLuces(int n){
 	}else{
 		  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
 	}
-	  estado=n;
+	estado_luces=n;
 }
 
 int getEstadoLuces(){
-	return estado;
+	return estado_luces;
 }
 
 void cambiarEstadoLuces(){
-	if(estado==0){
+	if(estado_luces==0){
 		setLuces(1);
 	}else{
 		setLuces(0);
 	}
 }
 
-void setModo(int n){
+void setModoLuces(int n){
 	if(n==0){
 			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
 			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
@@ -42,22 +43,22 @@ void setModo(int n){
 			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 		    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
 		}
-	  modo=n;
+	modo_luces=n;
 }
-int getModo(){
-	return modo;
+int getModoLuces(){
+	return modo_luces;
 }
 
-void cambiarModo(){
-	if(modo==0){
-		setModo(1);
+void cambiarModoLuces(){
+	if(modo_luces==0){
+		setModoLuces(1);
 	}else{
-		setModo(0);
+		setModoLuces(0);
 	}
 }
 
 void medirLDR(){
-	if(modo==1){
+	if(modo_luces==1){
 		int8_t adcval;
 			HAL_ADC_Start(&hadc1);
 			HAL_ADC_PollForConversion(&hadc1, 100);
@@ -68,6 +69,10 @@ void medirLDR(){
 			else
 				setLuces(0);
 	}
+}
+
+void luces(){
+	medirLDR();
 }
 
 #endif /* INC_CONTROL_LUCES_H_ */
