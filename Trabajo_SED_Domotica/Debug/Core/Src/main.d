@@ -35,7 +35,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/TFT.h ../Core/Inc/main.h ../Core/Inc/control_luces.h \
  ../Core/Inc/control_BT.h ../Core/Inc/TFT.h ../Core/Inc/control_luces.h \
  ../Core/Inc/control_persianas.h ../Core/Inc/control_riego.h \
- ../Core/Inc/control_seguridad.h
+ ../Core/Inc/control_seguridad.h ../Core/Inc/control_clima.h
 
 ../Core/Inc/main.h:
 
@@ -122,3 +122,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/control_riego.h:
 
 ../Core/Inc/control_seguridad.h:
+
+../Core/Inc/control_clima.h:

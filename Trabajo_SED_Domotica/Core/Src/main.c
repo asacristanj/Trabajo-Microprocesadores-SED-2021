@@ -116,10 +116,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 */
 	if (GPIO_Pin == GPIO_PIN_3) {
 		button_int=1;
+		/*
 		if (debouncer(&button_int, GPIOA, GPIO_PIN_3)){
 			cambiarEstadoLuces();
 		}
-	} else if (GPIO_Pin == GPIO_PIN_11) {
+		*/
+
+	} /* else if (GPIO_Pin == GPIO_PIN_11) {
 		button_int=1;
 		if (debouncer(&button_int, GPIOE, GPIO_PIN_11)){
 		setEstadoPersianas(0);
@@ -159,7 +162,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 		if (debouncer(&button_int, GPIOB, GPIO_PIN_15)){
 			cambiaControlClima();
 		}
+
 	}
+*/
 
 }
 
@@ -210,6 +215,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 //MENU PRINCIPAL
+		/*
 		if (menu_actual == 0) {
 			if (retorno == 0) {
 				pantalla_principal();
@@ -264,10 +270,14 @@ int main(void)
 				retorno--;
 			}
 		}
+		*/
+		if (debouncer(&button_int, GPIOA, GPIO_PIN_3)){
+			cambiarEstadoLuces();
+		}
 		luces();
-		riego();
-		seguridad();
-		clima();
+		//riego();
+		//seguridad();
+		//clima();
 	}
   /* USER CODE END 3 */
 }

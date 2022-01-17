@@ -28,11 +28,12 @@ int getEstadoLuces(){
 }
 
 void cambiarEstadoLuces(){
-	if(estado_luces==0){
-		setLuces(1);
-	}else{
-		setLuces(0);
-	}
+		if(estado_luces==0){
+			setLuces(1);
+		}else{
+			setLuces(0);
+		}
+
 }
 
 void setModoLuces(int n){
