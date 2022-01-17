@@ -10,20 +10,15 @@
 #include "main.h"
 
 ADC_HandleTypeDef hadc1;
-int estado_luces=0;//0 off 1 on 2 auto
+int estado_luces=0;
+int modo_luces=0; //0 manual 1 auto
 
 void setLuces(int n){
 	if(n==0){
 		  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
-			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
-			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-	}else if(n==1){
+
+	}else{
 		  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
-			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
-			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-	}else if(n==2){
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-	    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
 	}
 	estado_luces=n;
 }
@@ -35,16 +30,36 @@ int getEstadoLuces(){
 void cambiarEstadoLuces(){
 		if(estado_luces==0){
 			setLuces(1);
-		}else if(estado_luces==1){
-			setLuces(2);
-		}else if(estado_luces==2){
+		}else{
 			setLuces(0);
 		}
 
 }
 
+void setModoLuces(int n){
+	if(n==0){
+			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+		}else{
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+		    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+		}
+	modo_luces=n;
+}
+int getModoLuces(){
+	return modo_luces;
+}
+
+void cambiarModoLuces(){
+	if(modo_luces==0){
+		setModoLuces(1);
+	}else{
+		setModoLuces(0);
+	}
+}
+
 void medirLDR(){
-	if(estado_luces==2){
+	if(modo_luces==1){
 		int8_t adcval;
 			HAL_ADC_Start(&hadc1);
 			HAL_ADC_PollForConversion(&hadc1, 100);

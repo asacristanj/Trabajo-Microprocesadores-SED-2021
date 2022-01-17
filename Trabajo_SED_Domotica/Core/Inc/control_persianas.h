@@ -42,6 +42,8 @@ void cambiarEstadoPersianas(){
 		setEstadoPersianas(2);
 	}else if(getEstadoPersianas()==0 && getEstadoAnteriorPersianas()==0){
 		setEstadoPersianas(2);
+	}else if(getEstadoPersianas()==0 && getEstadoAnteriorPersianas()==0){
+		setEstadoPersianas(1);
 	}else if(getEstadoPersianas()==1){
 		setEstadoPersianas(0);
 	}else if(getEstadoPersianas()==2){
