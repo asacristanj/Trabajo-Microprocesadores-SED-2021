@@ -17,6 +17,7 @@ float Humidity = 0;
 uint8_t Presence = 0;
 
 int estado_clima; //0 todo apagado, 1 calef encendida y aire apagado, 2 calef apagada y aire encendido
+int controldelclima=1;
 
 void setEstadoClima(int n){
 	estado_clima=n;
@@ -36,21 +37,26 @@ int getEstadoClima(){
 	return estado_clima;
 }
 
-void cambiaEstadoClimaCalef(){
-	if(estado_clima==0||estado_clima==2){
+void cambiaEstadoClima(){
+	controldelclima=0;
+
+	if(estado_clima==0){
 		setEstadoClima(1);
-	}else{
+	}else if(estado_clima==1){
+		setEstadoClima(2);
+	}else if(estado_clima==2){
 		setEstadoClima(0);
 	}
 }
 
-void cambiaEstadoClimaAire(){
-	if(estado_clima==0||estado_clima==1){
-		setEstadoClima(2);
+void cambiaControlClima(){
+	if(controldelclima==0){
+		controldelclima=1;
 	}else{
-		setEstadoClima(0);
+		controldelclima=0;
 	}
 }
+
 
 void delay(uint16_t time) {
 	__HAL_TIM_SET_COUNTER(&htim6, 0);
@@ -134,7 +140,15 @@ void lectura_dht11() {
 }
 
 void clima(){
-	lectura_dht11();
+	if(controldelclima==1){
+		lectura_dht11();
+		if(Temperature>20){
+			setEstadoClima(0);
+		}else{
+			setEstadoClima(1);
+		}
+	}
+
 }
 
 #endif /* INC_CONTROL_CLIMA_H_ */

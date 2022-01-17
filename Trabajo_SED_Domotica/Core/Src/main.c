@@ -152,12 +152,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	}else if (GPIO_Pin == GPIO_PIN_14) {
 		button_int=1;
 		if (debouncer(&button_int, GPIOB, GPIO_PIN_14)){
-		cambiaEstadoClimaCalef();
+		cambiaEstadoClima();
 		}
 	}else if (GPIO_Pin == GPIO_PIN_15) {
 		button_int=1;
 		if (debouncer(&button_int, GPIOB, GPIO_PIN_15)){
-			cambiaEstadoClimaAire();
+			cambiaControlClima();
 		}
 	}
 
@@ -267,6 +267,7 @@ int main(void)
 		luces();
 		riego();
 		seguridad();
+		clima();
 	}
   /* USER CODE END 3 */
 }
