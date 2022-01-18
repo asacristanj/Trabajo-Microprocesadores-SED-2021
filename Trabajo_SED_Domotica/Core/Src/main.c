@@ -107,15 +107,6 @@ int debouncer(volatile int *button_int, GPIO_TypeDef *GPIO_port,
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	/*
-	 void rellbotones(int n) {
-	 for (int i = 0; i < 10; i++) {
-	 if (i != n)
-	 button[i] = 0;
-	 }
-	 button[n] = 1;
-	 }
-	 */
 	if (GPIO_Pin == GPIO_PIN_3) {
 		button_int = 1;
 		boton_presionado = 3;
@@ -192,7 +183,7 @@ int main(void)
 	setEstadoClima(0);
 	setEstadoSeguridad(0);
 	setEstadoRiego(2);
-
+	pantalla_principal();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -337,6 +328,7 @@ int main(void)
 		riego();
 		seguridad();
 		clima();
+		bluetooth();
 	}
   /* USER CODE END 3 */
 }
@@ -451,7 +443,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;

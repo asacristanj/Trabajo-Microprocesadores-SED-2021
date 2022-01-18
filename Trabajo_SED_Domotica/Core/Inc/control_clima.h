@@ -19,6 +19,7 @@ uint8_t Presence = 0;
 int estado_clima; //0 todo apagado, 1 calef encendida y aire apagado, 2 calef apagada y aire encendido
 int controldelclima=0; //0 manual, 1 auto
 uint32_t tickstart_clima=0; counter_clima=0;
+
 void setEstadoClima(int n){
 	estado_clima=n;
 	if(estado_clima==0){
