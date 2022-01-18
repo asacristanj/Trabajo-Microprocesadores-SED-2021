@@ -18,7 +18,7 @@ uint8_t Presence = 0;
 
 int estado_clima; //0 todo apagado, 1 calef encendida y aire apagado, 2 calef apagada y aire encendido
 int controldelclima=0; //0 manual, 1 auto
-
+uint32_t tickstart_clima=0; counter_clima=0;
 void setEstadoClima(int n){
 	estado_clima=n;
 	if(estado_clima==0){
@@ -37,7 +37,7 @@ int getEstadoClima(){
 	return estado_clima;
 }
 
-void cambiaEstadoClima(){
+void cambiarEstadoClima(){
 	controldelclima=0;
 
 	if(estado_clima==0){
@@ -49,7 +49,7 @@ void cambiaEstadoClima(){
 	}
 }
 
-void cambiaControlClima(){
+void cambiarControlClima(){
 	if(controldelclima==0){
 		controldelclima=1;
 	}else{
@@ -140,13 +140,17 @@ void lectura_dht11() {
 }
 
 void clima(){
-	if(controldelclima==1){
+	if(controldelclima==1 && counter_clima>1000){
+		counter_clima=0;
+		tickstart_clima=HAL_GetTick();
 		lectura_dht11();
 		if(Temperature>20){
-			setEstadoClima(0);
+			setEstadoClima(2);
 		}else{
 			setEstadoClima(1);
 		}
+	}else{
+		counter_clima=HAL_GetTick()-tickstart_clima;
 	}
 
 }

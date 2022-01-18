@@ -184,9 +184,9 @@ int main(void) {
 	int retorno = 0;
 
 	setEstadoPersianas(0);
-	setLuces(2);
+	setLuces(0);
 	setEstadoClima(0);
-	setEstadoSeguridad(0);
+	//setEstadoSeguridad(0);
 	setEstadoRiego(2);
 
 	/* USER CODE END 2 */
@@ -293,13 +293,13 @@ int main(void) {
 			}
 			break;
 		case 14:
-			if (debouncer(&button_int, GPIOA, GPIO_PIN_7)) {
-				cambiarEstadoSeguridad();
+			if (debouncer(&button_int, GPIOB, GPIO_PIN_14)) {
+				cambiarControlClima();
 			}
 			break;
 		case 15:
 			if (debouncer(&button_int, GPIOB, GPIO_PIN_15)) {
-				cambiaControlClima();
+				cambiarEstadoClima();
 			}
 			break;
 		}
@@ -331,7 +331,7 @@ int main(void) {
 
 		luces();
 		riego();
-		seguridad();
+		//seguridad();
 		clima();
 	}
 	/* USER CODE END 3 */

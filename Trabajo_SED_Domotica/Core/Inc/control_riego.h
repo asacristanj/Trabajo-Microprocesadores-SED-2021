@@ -18,15 +18,15 @@ void setEstadoRiego(int n){
 	estado_riego=n;
 	tickstart_riego=HAL_GetTick();
 	if(estado_riego==0){
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
 	}else if(estado_riego==1){
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
 	}
 	else if(estado_riego==2){
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
 		}
 }
 
@@ -42,7 +42,7 @@ void cambiarEstadoRiego(){
 
 void temporizador_riego(){
 	if(estado_riego==0 || estado_riego==1){
-		if(HAL_GetTick()-tickstart_riego>5000){
+		if(HAL_GetTick()-tickstart_riego>1000){
 			setEstadoRiego(2);
 		}
 	}

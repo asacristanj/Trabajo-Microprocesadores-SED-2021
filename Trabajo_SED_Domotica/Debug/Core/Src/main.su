@@ -41,8 +41,8 @@ control_seguridad.h:59:6:sonar_alarma	4	static
 control_seguridad.h:63:6:seguridad	8	static
 control_clima.h:22:6:setEstadoClima	16	static
 control_clima.h:36:5:getEstadoClima	4	static
-control_clima.h:40:6:cambiaEstadoClima	8	static
-control_clima.h:52:6:cambiaControlClima	4	static
+control_clima.h:40:6:cambiarEstadoClima	8	static
+control_clima.h:52:6:cambiarControlClima	4	static
 control_clima.h:61:6:delay	16	static
 control_clima.h:67:6:Set_Pin_Output	40	static
 control_clima.h:75:6:Set_Pin_Input	40	static
