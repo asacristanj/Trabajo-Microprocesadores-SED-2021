@@ -12,7 +12,7 @@
 int estado_seguridad=0; //0 sistema apagado, 1 sistema encendiendose, 2 sistema_ activo
 int alarma_seguridad=0; //0 alarma apagada, 1 alarma encendida
 
-uint32_t tickstart_seguridad;
+uint32_t tickstart_seguridad=0, counter_seguridad=0;
 
 
 
@@ -22,18 +22,19 @@ void setEstadoSeguridad(int n){
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
 		alarma_seguridad=0;
 	}else if(estado_seguridad==1){
+		alarma_seguridad=0;
 		tickstart_seguridad=HAL_GetTick();
 	}else if(estado_seguridad==2){
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-
 	}
 }
 
 void activar_sensor(){
-	if(estado_seguridad==1){
-		if(HAL_GetTick()-tickstart_seguridad>5000){
+	if(estado_seguridad==1&&counter_seguridad>5000){
+		counter_seguridad=0;
 			setEstadoSeguridad(2);
-		}
+	}else if(estado_seguridad==1){
+		counter_seguridad=HAL_GetTick()-tickstart_seguridad;
 	}
 }
 
@@ -50,14 +51,15 @@ void cambiarEstadoSeguridad(){
 }
 
 void intruso_detectado(){
-	alarma_seguridad=0;
 	if(estado_seguridad==2){
 		alarma_seguridad=1;
 	}
 }
 
 void sonar_alarma(){
-
+if(estado_seguridad==2&&alarma_seguridad==1){
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
+}
 }
 
 void seguridad(){
