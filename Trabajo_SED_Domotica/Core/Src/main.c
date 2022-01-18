@@ -74,8 +74,8 @@ static void MX_TIM6_Init(void);
 /* USER CODE BEGIN 0 */
 
 //Interrupciones botones:
-volatile int button_int;
-
+volatile int button_int = 0;
+int boton_presionado = 0;
 //Antirrebotes botones:
 int debouncer(volatile int *button_int, GPIO_TypeDef *GPIO_port,
 		uint16_t GPIO_number) {
@@ -116,30 +116,31 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	 */
 	if (GPIO_Pin == GPIO_PIN_3) {
 		button_int = 1;
+		boton_presionado = 3;
 	} else if (GPIO_Pin == GPIO_PIN_11) {
 		button_int = 1;
-
+		boton_presionado = 11;
 	} else if (GPIO_Pin == GPIO_PIN_12) {
 		button_int = 1;
-
+		boton_presionado = 12;
 	} else if (GPIO_Pin == GPIO_PIN_13) {
 		button_int = 1;
-
+		boton_presionado = 13;
 	} else if (GPIO_Pin == GPIO_PIN_10) {
 		button_int = 1;
-
+		boton_presionado = 10;
 	} else if (GPIO_Pin == GPIO_PIN_7) {
 		button_int = 1;
-
+		boton_presionado = 7;
 	} else if (GPIO_Pin == GPIO_PIN_9) {
 		button_int = 1;
-
+		boton_presionado = 9;
 	} else if (GPIO_Pin == GPIO_PIN_14) {
 		button_int = 1;
-
+		boton_presionado = 14;
 	} else if (GPIO_Pin == GPIO_PIN_15) {
 		button_int = 1;
-
+		boton_presionado = 15;
 	}
 
 }
@@ -183,7 +184,7 @@ int main(void) {
 	int retorno = 0;
 
 	setEstadoPersianas(0);
-	setLuces(0);
+	setLuces(2);
 	setEstadoClima(0);
 	setEstadoSeguridad(0);
 	setEstadoRiego(2);
@@ -252,26 +253,82 @@ int main(void) {
 		 retorno--;
 		 }
 		 }
+
 		 */
-		if (debouncer(&button_int, GPIOA, GPIO_PIN_3)) {
-			cambiarEstadoLuces();
-		} else if (debouncer(&button_int, GPIOE, GPIO_PIN_11)) {
-			setEstadoPersianas(0);
-		} else if (debouncer(&button_int, GPIOE, GPIO_PIN_12)) {
-			setEstadoPersianas(0);
-		} else if (debouncer(&button_int, GPIOA, GPIO_PIN_13)) {
-			cambiarEstadoPersianas();
-		} else if (debouncer(&button_int, GPIOA, GPIO_PIN_10)) {
-			cambiarEstadoRiego();
-		} else if (debouncer(&button_int, GPIOA, GPIO_PIN_7)) {
-			cambiarEstadoSeguridad();
-		} else if (debouncer(&button_int, GPIOA, GPIO_PIN_9)) {
-			intruso_detectado();
-		} else if (debouncer(&button_int, GPIOB, GPIO_PIN_14)) {
-			cambiaEstadoClima();
-		} else if (debouncer(&button_int, GPIOB, GPIO_PIN_15)) {
-			cambiaControlClima();
+
+		switch (boton_presionado) {
+		case 3:
+			if (debouncer(&button_int, GPIOA, GPIO_PIN_3)) {
+				cambiarEstadoLuces();
+			}
+			break;
+		case 11:
+			if (debouncer(&button_int, GPIOE, GPIO_PIN_11)) {
+				setEstadoPersianas(0);
+			}
+			break;
+		case 12:
+			if (debouncer(&button_int, GPIOE, GPIO_PIN_12)) {
+				setEstadoPersianas(0);
+			}
+			break;
+		case 13:
+			if (debouncer(&button_int, GPIOA, GPIO_PIN_13)) {
+				cambiarEstadoPersianas();
+			}
+			break;
+		case 10:
+			if (debouncer(&button_int, GPIOA, GPIO_PIN_10)) {
+				cambiarEstadoRiego();
+			}
+			break;
+		case 7:
+			if (debouncer(&button_int, GPIOA, GPIO_PIN_7)) {
+				cambiarEstadoSeguridad();
+			}
+			break;
+		case 9:
+			if (debouncer(&button_int, GPIOA, GPIO_PIN_9)) {
+				intruso_detectado();
+			}
+			break;
+		case 14:
+			if (debouncer(&button_int, GPIOA, GPIO_PIN_7)) {
+				cambiarEstadoSeguridad();
+			}
+			break;
+		case 15:
+			if (debouncer(&button_int, GPIOB, GPIO_PIN_15)) {
+				cambiaControlClima();
+			}
+			break;
 		}
+
+		/*
+		 if (button_int == 1) {
+		 if (debouncer(&button_int, GPIOA, GPIO_PIN_3)) {
+		 cambiarEstadoLuces();
+		 }
+		 } else if (button_int == 2) {
+		 if (debouncer(&button_int, GPIOE, GPIO_PIN_11)) {
+		 setEstadoPersianas(0);
+		 }
+		 }/* else if (debouncer(&button_int, GPIOE, GPIO_PIN_12)) {
+		 setEstadoPersianas(0);
+		 } else if (debouncer(&button_int, GPIOA, GPIO_PIN_13)) {
+		 cambiarEstadoPersianas();
+		 } else if (debouncer(&button_int, GPIOA, GPIO_PIN_10)) {
+		 cambiarEstadoRiego();
+		 } else if (debouncer(&button_int, GPIOA, GPIO_PIN_7)) {
+		 cambiarEstadoSeguridad();
+		 } else if (debouncer(&button_int, GPIOA, GPIO_PIN_9)) {
+		 intruso_detectado();
+		 } else if (debouncer(&button_int, GPIOB, GPIO_PIN_14)) {
+		 cambiaEstadoClima();
+		 } else if (debouncer(&button_int, GPIOB, GPIO_PIN_15)) {
+		 cambiaControlClima();
+		 }*/
+
 		luces();
 		riego();
 		seguridad();
@@ -485,7 +542,7 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOA,
-			GPIO_PIN_2 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_8,
+	GPIO_PIN_2 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_8,
 			GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
