@@ -39,7 +39,9 @@ void cambiarEstadoRiego(){
 		setEstadoRiego(0);
 	}
 }
-
+int getEstadoAnteriorRiego(){
+	return estado_anterior_riego;
+}
 void temporizador_riego(){
 	if(estado_riego==0 || estado_riego==1){
 		if(HAL_GetTick()-tickstart_riego>1000){

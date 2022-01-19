@@ -74,6 +74,12 @@ static void MX_TIM1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+char readBuf[1];
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle) {
+ /* Se recibe el caracter y se pide el siguiente*/
+ HAL_UART_Receive_IT(&huart6, (uint8_t*)readBuf, 1);
+ bluetooth(readBuf);
+}
 
 //Interrupciones botones:
 volatile int button_int = 0;
@@ -180,11 +186,13 @@ int main(void)
 	setEstadoClima(0);
 	setEstadoSeguridad(0);
 	setEstadoRiego(2);
+	lectura_dht11();
 	//pantalla_principal();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	  HAL_UART_Receive_IT(&huart6, (uint8_t*)readBuf, 1);
 	while (1) {
     /* USER CODE END WHILE */
 
@@ -319,7 +327,6 @@ int main(void)
 		riego();
 		seguridad();
 		clima();
-		//bluetooth();
 	}
   /* USER CODE END 3 */
 }

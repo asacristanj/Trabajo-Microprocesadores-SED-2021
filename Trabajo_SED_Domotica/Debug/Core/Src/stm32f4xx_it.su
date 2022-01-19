@@ -11,3 +11,4 @@ stm32f4xx_it.c:204:6:EXTI0_IRQHandler	8	static
 stm32f4xx_it.c:218:6:EXTI3_IRQHandler	8	static
 stm32f4xx_it.c:232:6:EXTI9_5_IRQHandler	8	static
 stm32f4xx_it.c:247:6:EXTI15_10_IRQHandler	8	static
+stm32f4xx_it.c:266:6:USART6_IRQHandler	8	static

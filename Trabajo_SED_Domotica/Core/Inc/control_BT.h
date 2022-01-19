@@ -16,44 +16,172 @@
 #include "control_riego.h"
 #include "control_seguridad.h"
 #include "control_clima.h"
+#include "stdio.h"
 
 UART_HandleTypeDef huart6;
 char rx_buffer, tx_buffer[50];
 /*
-void reset_buffer() {
-	for (int i = 0; i < 50; i++) {
-		rx_buffer[0] = '\0';
+ void reset_buffer() {
+ for (int i = 0; i < 50; i++) {
+ rx_buffer[0] = '\0';
+ }
+ }
+ */
+void bluetooth(char recibido[]) {
+	if (strcmp(recibido, "a") == 0) {
+		if (getEstadoLuces() == 1)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Las luces ya estaban activadas\n"),
+					500);
+		else {
+			setLuces(1);
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Luces activadas\n"), 500);
+		}
+	} else if (strcmp(recibido, "b") == 0) {
+		if (getEstadoLuces() == 0)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Luces ya estaban desactivadas\n"), 500);
+		else {
+			setLuces(0);
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Luces desactivadas\n"), 500);
+		}
+	} else if (strcmp(recibido, "c") == 0) {
+		if (getEstadoLuces() == 2)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Luces ya estaban en modo automatico\n"),
+					500);
+		else {
+			setLuces(2);
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Luces en modo automatico\n"), 500);
+		}
+	} else if (strcmp(recibido, "d") == 0) {
+		if (getEstadoAnteriorRiego() == 0)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Ya estabas regando\n"), 500);
+		else {
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Abriendo electrovalvula...\n"), 500);
+			setEstadoRiego(0);
+		}
+	} else if (strcmp(recibido, "e") == 0) {
+		if (getEstadoAnteriorRiego() == 1)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "La electrovalvula ya estaba cerrada\n"),
+					500);
+		else {
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Cerrando electrovalvula...\n"), 500);
+			setEstadoRiego(1);
+		}
+	} else if (strcmp(recibido, "f") == 0) {
+		if (getEstadoPersianas() == 1)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Ya se esta subiendo la persiana\n"),
+					500);
+		else {
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Subiendo persiana...\n"), 500);
+			setEstadoPersianas(1);
+		}
+	} else if (strcmp(recibido, "g") == 0) {
+		if (getEstadoPersianas() == 2)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Ya se esta bajando la persiana\n"),
+					500);
+		else {
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Bajando persiana...\n"), 500);
+			setEstadoPersianas(2);
+		}
+	} else if (strcmp(recibido, "h") == 0) {
+		if (getEstadoPersianas() == 0)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "La persiana ya estaba parada\n"), 500);
+		else {
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Parando persiana...\n"), 500);
+			setEstadoPersianas(0);
+		}
+	} else if (strcmp(recibido, "i") == 0) {
+		if(getEstadoClima()==1){
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+							sprintf(tx_buffer, "La calefaccion ya estaba encendida\n"), 500);
+		}else{
+			setEstadoClima(1);
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Encendiendo calefaccion...\n"), 500);
+		}
+	} else if (strcmp(recibido, "j") == 0) {
+		if(getEstadoClima()==2){
+					HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+									sprintf(tx_buffer, "El ventilador ya estaba encendido\n"), 500);
+				}else{
+					setEstadoClima(2);
+					HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+							sprintf(tx_buffer, "Encendiendo ventilador...\n"), 500);
+				}
+	} else if (strcmp(recibido, "k") == 0) {
+		if (getEstadoClima() == 1)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Apagando calefaccion\n"), 500);
+		else if (getEstadoClima() == 2)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Apagando ventilador\n"), 500);
+		else
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer,
+							"Calefaccion y ventilador ya estaban apagadas\n"),
+					500);
+		setEstadoClima(0);
+	} else if (strcmp(recibido, "l") == 0) {
+		if (getControlClima() == 1)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Termostato ya estaba activado\n"), 500);
+		else {
+			setControlClima(1);
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Termostato activado\n"), 500);
+		}
+	} else if (strcmp(recibido, "m") == 0) {
+		if (getControlClima() == 0)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Termostato ya estaba desactivado\n"),
+					500);
+		else {
+			setControlClima(0);
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Termostato desactivado\n"), 500);
+		}
+	}else if(strcmp(recibido,"n")==0){
+	lectura_dht11();
+	 HAL_UART_Transmit(&huart6, (uint8_t *)tx_buffer, sprintf(tx_buffer, "La temperatura es de %i ºC\n", (int) Temperature), 500);
+	 }else if(strcmp(recibido,"o")==0){
+		 lectura_dht11();
+		 	 HAL_UART_Transmit(&huart6, (uint8_t *)tx_buffer, sprintf(tx_buffer, "La humedad relativa es del %i %%\n",(int) Humidity), 500);
+		 }else if (strcmp(recibido, "p") == 0) {
+		if (getEstadoSeguridad() == 2)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer,
+							"La alarma ya estaba encendida, reiniciandola...\n"),
+					500);
+		else
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Encendiendo alarma...\n"), 500);
+		setEstadoSeguridad(1);
+	} else if (strcmp(recibido, "q") == 0) {
+		if (getEstadoSeguridad() == 0)
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "La alarma ya estaba apagada\n"), 500);
+		else {
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer,
+					sprintf(tx_buffer, "Apagando alarma...\n"), 500);
+			setEstadoSeguridad(0);
+		}
+
 	}
-}
-*/
-void bluetooth() {
-	HAL_UART_Receive(&huart6, &rx_buffer, 1, HAL_MAX_DELAY);
-	switch (rx_buffer) {
-	case 'a':
-		cambiarEstadoLuces();
-		break;
-	case 'b':
-		cambiarEstadoRiego();
-		break;
-	case 'c':
-		cambiarEstadoPersianas();
-		break;
-	case 'd':
-		cambiarEstadoSeguridad();
-		break;
-	case 'e':
-		cambiarEstadoClima();
-		break;
-	case 'f':
-		cambiarControlClima();
-		break;
-	case 'g':
-		lectura_dht11();
-		//HAL_UART_Transmit(&huart6, &Temperature, 1, 500);
-		HAL_UART_Transmit(&huart6, (uint8_t *)tx_buffer, sprintf(tx_buffer, "La temperatura es de %i grados\n",(int)Temperature), 500);
-		break;
-	}
-	rx_buffer = '\0';
 }
 
 /*

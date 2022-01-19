@@ -16,6 +16,7 @@ float Temperature = 0;
 float Humidity = 0;
 uint8_t Presence = 0;
 
+int temperatura_objetivo=20;
 int estado_clima; //0 todo apagado, 1 calef encendida y aire apagado, 2 calef apagada y aire encendido
 int controldelclima=0; //0 manual, 1 auto
 uint32_t tickstart_clima=0; counter_clima=0;
@@ -50,14 +51,33 @@ void cambiarEstadoClima(){
 	}
 }
 
+void setControlClima(int c){
+	controldelclima=c;
+	if(c==0){
+		setEstadoClima(0);
+	}
+}
+
+int getControlClima(){
+	return controldelclima;
+}
+
 void cambiarControlClima(){
 	if(controldelclima==0){
 		controldelclima=1;
 	}else{
 		controldelclima=0;
+		setEstadoClima(0);
 	}
 }
 
+void setTemperaturaObjetivo(int t){
+	temperatura_objetivo=t;
+}
+
+int getTemperaturaObjetivo(){
+	return temperatura_objetivo;
+}
 
 void delay(uint16_t time) {
 	__HAL_TIM_SET_COUNTER(&htim6, 0);
@@ -145,7 +165,7 @@ void clima(){
 		counter_clima=0;
 		tickstart_clima=HAL_GetTick();
 		lectura_dht11();
-		if(Temperature>20){
+		if(Temperature>temperatura_objetivo){
 			setEstadoClima(2);
 		}else{
 			setEstadoClima(1);
