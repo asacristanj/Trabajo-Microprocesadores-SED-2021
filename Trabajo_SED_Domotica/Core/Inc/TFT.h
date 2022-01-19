@@ -226,12 +226,19 @@ void actualizar_pantalla(int act){
 				print("AIRE", 336, 94);
 			}
 	}else if(act==6){
-		fillRect(336, 110, 400,126);
+		fillRect(336, 138, 400,154);
 		setColor(255, 255, 255);
 		setBackColor(0, 0, 0);
 		char bufff[2];
-		//sprintf(bufff, "%i", (int) Temperature);
-		//print(bufff, 336, 110);
+		sprintf(bufff, "%i", (int) Temperature);
+		print(bufff, 336, 138);
+
+		setColor(0, 0, 0);
+		fillRect(384, 182, 470,198);
+		setColor(255, 255, 255);
+		setBackColor(0, 0, 0);
+		sprintf(bufff, "%i", (int) Humidity);
+		print(bufff, 384, 182);
 	}
 
 

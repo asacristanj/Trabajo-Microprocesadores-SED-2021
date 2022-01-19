@@ -163,11 +163,12 @@ void lectura_dht11() {
 }
 
 void clima(){
-	if(counter_clima>1000&&controldelclima==1){
+	if(counter_clima>2000){
 		counter_clima=0;
 		tickstart_clima=HAL_GetTick();
 		lectura_dht11();
-		//actualizar_pantalla(6);
+		actualizar_pantalla(6);
+		if(controldelclima==1){
 			if(Temperature>temperatura_objetivo){
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
@@ -175,6 +176,8 @@ void clima(){
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
 						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
 			}
+		}
+
 	}else{
 		counter_clima=HAL_GetTick()-tickstart_clima;
 	}
