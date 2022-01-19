@@ -179,7 +179,11 @@ void bluetooth(char recibido[]) {
 			setEstadoSeguridad(0);
 		}
 
-	}
+	}else if (strcmp(recibido, "z") == 0) {
+		HAL_UART_Transmit(&huart6, (uint8_t *)tx_buffer, sprintf(tx_buffer, "ldr %i\n", (int) getMediaLDR()), 500);
+		}
+
+
 }
 
 /*
