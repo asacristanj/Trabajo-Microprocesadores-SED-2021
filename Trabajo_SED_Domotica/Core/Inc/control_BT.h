@@ -156,10 +156,8 @@ void bluetooth(char recibido[]) {
 					sprintf(tx_buffer, "Termostato desactivado\n"), 500);
 		}
 	}else if(strcmp(recibido,"n")==0){
-	lectura_dht11();
 	 HAL_UART_Transmit(&huart6, (uint8_t *)tx_buffer, sprintf(tx_buffer, "La temperatura es de %i ºC\n", (int) Temperature), 500);
 	 }else if(strcmp(recibido,"o")==0){
-		 lectura_dht11();
 		 	 HAL_UART_Transmit(&huart6, (uint8_t *)tx_buffer, sprintf(tx_buffer, "La humedad relativa es del %i %%\n",(int) Humidity), 500);
 		 }else if (strcmp(recibido, "p") == 0) {
 		if (getEstadoSeguridad() == 2)

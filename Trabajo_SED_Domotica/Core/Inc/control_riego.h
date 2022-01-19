@@ -8,6 +8,7 @@
 #ifndef INC_CONTROL_RIEGO_H_
 #define INC_CONTROL_RIEGO_H_
 #include "main.h"
+#include "TFT.h"
 
 int estado_riego=2; //0 abrir electrovalvula, 1 cerrar electrovalvula, 2 parar electrovalvula
 int estado_anterior_riego=2;
@@ -28,6 +29,7 @@ void setEstadoRiego(int n){
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
 		}
+	actualizar_pantalla(2);
 }
 
 void cambiarEstadoRiego(){

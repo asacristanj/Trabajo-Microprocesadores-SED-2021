@@ -25,6 +25,7 @@ void setEstadoPersianas(int n){
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
 	}
+	actualizar_pantalla(4);
 }
 
 int getEstadoPersianas(){

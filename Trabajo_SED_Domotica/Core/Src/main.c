@@ -178,16 +178,16 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start(&htim6);
-	int menu_actual = 0;
-	int retorno = 0;
-
+	//int menu_actual = 0;
+	//int retorno = 0;
+	pantalla_principal();
 	setEstadoPersianas(0);
 	setLuces(0);
 	setEstadoClima(0);
 	setEstadoSeguridad(0);
 	setEstadoRiego(2);
 	lectura_dht11();
-	//pantalla_principal();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -197,64 +197,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//MENU PRINCIPAL
-		/*
-		 if (menu_actual == 0) {
-		 if (retorno == 0) {
-		 pantalla_principal();
-		 retorno++;
-		 }
-		 menu_actual = seleccion_menu_principal();
-		 if (menu_actual != 0) {
-		 retorno--;
-		 }
-		 //MENU SELECCION MODO LUCES
-		 } else if (menu_actual == 1) {
-		 if (retorno == 0) {
-		 pantalla_luces();
-		 retorno++;
-		 }
-		 menu_actual = seleccion_menu_luces();
-		 if (menu_actual != 1) {
-		 retorno--;
-		 }
-		 //MENU SELECCION MODO PERSIANAS
-		 } else if (menu_actual == 2) {
-		 clrScr();
-		 }
-		 //MENU SELECCION MODO RIEGO
-		 else if (menu_actual == 3) {
-		 clrScr();
-		 }
-		 //MENU SELECCION MODO CLIMA
-		 else if (menu_actual == 4) {
-		 clrScr();
-		 }
-		 //MENU SELECCION AUDIO
-		 else if (menu_actual == 5) {
-		 clrScr();
-		 }
-		 //MENU SEGURIDAD
-		 else if (menu_actual == 6) {
-		 clrScr();
-		 }
-		 //MENU LUCES AUTOMATICO (7)
-		 else if (menu_actual == 7) {
-
-		 }
-		 //MENU LUCES MANUAL (8)
-		 else if (menu_actual == 8) {
-		 if (retorno == 0) {
-		 pantalla_luces_manual();
-		 retorno++;
-		 }
-		 menu_actual = menu_luces_manual();
-		 if (menu_actual != 8) {
-		 retorno--;
-		 }
-		 }
-
-		 */
 		switch (boton_presionado) {
 		case 3:
 			if (debouncer(&button_int, GPIOA, GPIO_PIN_3)) {

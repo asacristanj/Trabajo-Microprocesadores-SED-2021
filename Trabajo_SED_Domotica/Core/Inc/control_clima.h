@@ -19,7 +19,7 @@ uint8_t Presence = 0;
 int temperatura_objetivo=20;
 int estado_clima; //0 todo apagado, 1 calef encendida y aire apagado, 2 calef apagada y aire encendido
 int controldelclima=0; //0 manual, 1 auto
-uint32_t tickstart_clima=0; counter_clima=0;
+uint32_t tickstart_clima=0, counter_clima=0;
 
 void setEstadoClima(int n){
 	estado_clima=n;
@@ -33,6 +33,7 @@ void setEstadoClima(int n){
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
 	}
+	actualizar_pantalla(5);
 }
 
 int getEstadoClima(){
@@ -69,6 +70,7 @@ void cambiarControlClima(){
 		controldelclima=0;
 		setEstadoClima(0);
 	}
+	actualizar_pantalla(5);
 }
 
 void setTemperaturaObjetivo(int t){
@@ -161,15 +163,18 @@ void lectura_dht11() {
 }
 
 void clima(){
-	if(controldelclima==1 && counter_clima>1000){
+	if(counter_clima>1000&&controldelclima==1){
 		counter_clima=0;
 		tickstart_clima=HAL_GetTick();
 		lectura_dht11();
-		if(Temperature>temperatura_objetivo){
-			setEstadoClima(2);
-		}else{
-			setEstadoClima(1);
-		}
+		//actualizar_pantalla(6);
+			if(Temperature>temperatura_objetivo){
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+			}else{
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+			}
 	}else{
 		counter_clima=HAL_GetTick()-tickstart_clima;
 	}

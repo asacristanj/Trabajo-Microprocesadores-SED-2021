@@ -8,6 +8,7 @@
 #ifndef INC_CONTROL_LUCES_H_
 #define INC_CONTROL_LUCES_H_
 #include "main.h"
+#include "TFT.h"
 
 ADC_HandleTypeDef hadc1;
 int estado_luces=0;//0 off 1 on 2 auto
@@ -30,6 +31,7 @@ void setLuces(int n){
 	    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 	}
 	estado_luces=n;
+	actualizar_pantalla(1);
 }
 
 int getEstadoLuces(){

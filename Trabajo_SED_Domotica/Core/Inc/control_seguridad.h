@@ -26,6 +26,7 @@ void setEstadoSeguridad(int n) {
 	} else if (estado_seguridad == 2) {
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
 	}
+	actualizar_pantalla(3);
 }
 
 void activar_sensor() {
