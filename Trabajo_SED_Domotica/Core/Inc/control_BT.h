@@ -27,7 +27,7 @@ void reset_buffer() {
 }
 */
 void bluetooth() {
-	HAL_UART_Receive(&huart6, &rx_buffer, 1, 500);
+	HAL_UART_Receive(&huart6, &rx_buffer, 1, HAL_MAX_DELAY);
 	switch (rx_buffer) {
 	case 'a':
 		cambiarEstadoLuces();

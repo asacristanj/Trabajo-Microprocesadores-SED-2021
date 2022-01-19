@@ -110,9 +110,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	if (GPIO_Pin == GPIO_PIN_3) {
 		button_int = 1;
 		boton_presionado = 3;
-	} else if (GPIO_Pin == GPIO_PIN_11) {
-		button_int = 1;
-		boton_presionado = 11;
 	} else if (GPIO_Pin == GPIO_PIN_12) {
 		button_int = 1;
 		boton_presionado = 12;
@@ -183,7 +180,7 @@ int main(void)
 	setEstadoClima(0);
 	setEstadoSeguridad(0);
 	setEstadoRiego(2);
-	pantalla_principal();
+	//pantalla_principal();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -250,16 +247,10 @@ int main(void)
 		 }
 
 		 */
-
 		switch (boton_presionado) {
 		case 3:
 			if (debouncer(&button_int, GPIOA, GPIO_PIN_3)) {
 				cambiarEstadoLuces();
-			}
-			break;
-		case 11:
-			if (debouncer(&button_int, GPIOE, GPIO_PIN_11)) {
-				setEstadoPersianas(0);
 			}
 			break;
 		case 12:
@@ -328,7 +319,7 @@ int main(void)
 		riego();
 		seguridad();
 		clima();
-		bluetooth();
+		//bluetooth();
 	}
   /* USER CODE END 3 */
 }
